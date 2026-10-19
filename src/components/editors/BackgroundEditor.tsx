@@ -82,7 +82,7 @@ export const BackgroundEditor: React.FC = () => {
     ? { background: `linear-gradient(${gradient.angle}deg, ${gradient.from}, ${gradient.to})` }
     : bgType === 'solid'
     ? { backgroundColor: solidColor }
-    : { background: 'repeating-conic-gradient(#334155 0% 25%, #1e293b 0% 50%) 50% / 16px 16px' };
+    : { background: 'repeating-conic-gradient(#94a3b840 0% 25%, #64748b20 0% 50%) 50% / 16px 16px' };
 
   return (
     <Modal
@@ -94,13 +94,13 @@ export const BackgroundEditor: React.FC = () => {
     >
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Live Visual Canvas Area */}
-        <div className="flex-1 min-h-[380px] max-h-[500px] bg-slate-950/80 rounded-2xl border border-slate-800 p-8 flex items-center justify-center overflow-hidden">
+        <div className="flex-1 min-h-[380px] max-h-[500px] bg-slate-100/90 dark:bg-slate-950/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 flex items-center justify-center overflow-hidden">
           <div
             style={{
               ...bgStyle,
               padding: `${padding}px`,
             }}
-            className="transition-all duration-200 rounded-2xl flex items-center justify-center max-w-full max-h-full"
+            className="transition-all duration-200 rounded-2xl flex items-center justify-center max-w-full max-h-full shadow-md"
           >
             {file.thumbnailData && (
               <img
@@ -121,16 +121,18 @@ export const BackgroundEditor: React.FC = () => {
         <div className="w-full lg:w-80 space-y-5">
           {/* Background Type Selector */}
           <div>
-            <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2">
+            <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-2">
               Background Style
             </label>
-            <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-950 rounded-xl border border-slate-800">
+            <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800">
               {(['gradient', 'solid', 'transparent'] as const).map((t) => (
                 <button
                   key={t}
                   onClick={() => setBgType(t)}
                   className={`py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${
-                    bgType === t ? 'bg-sky-500 text-white shadow' : 'text-slate-400 hover:text-white'
+                    bgType === t 
+                      ? 'bg-sky-500 text-white shadow' 
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   {t}
@@ -142,7 +144,7 @@ export const BackgroundEditor: React.FC = () => {
           {/* Gradient Presets */}
           {bgType === 'gradient' && (
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-2">
                 Curated Gradients
               </label>
               <div className="grid grid-cols-3 gap-2">
@@ -153,7 +155,7 @@ export const BackgroundEditor: React.FC = () => {
                     style={{
                       background: `linear-gradient(${g.angle}deg, ${g.from}, ${g.to})`,
                     }}
-                    className="h-9 rounded-xl border border-white/10 hover:scale-105 transition-transform"
+                    className="h-9 rounded-xl border border-black/10 dark:border-white/10 hover:scale-105 transition-transform shadow-sm"
                     title={g.label}
                   />
                 ))}
@@ -164,7 +166,7 @@ export const BackgroundEditor: React.FC = () => {
           {/* Solid Colors */}
           {bgType === 'solid' && (
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-2">
                 Color Palette
               </label>
               <div className="grid grid-cols-8 gap-1.5 mb-3">
@@ -174,7 +176,7 @@ export const BackgroundEditor: React.FC = () => {
                     onClick={() => setSolidColor(c)}
                     style={{ backgroundColor: c }}
                     className={`w-7 h-7 rounded-lg border transition-transform ${
-                      solidColor === c ? 'scale-110 border-sky-400' : 'border-slate-700 hover:scale-105'
+                      solidColor === c ? 'scale-110 border-sky-500 shadow-md ring-2 ring-sky-500/30' : 'border-slate-300 dark:border-slate-700 hover:scale-105'
                     }`}
                   />
                 ))}
@@ -184,9 +186,9 @@ export const BackgroundEditor: React.FC = () => {
 
           {/* Padding Slider */}
           <div>
-            <div className="flex justify-between text-xs text-slate-400 mb-1">
+            <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
               <span>Canvas Padding</span>
-              <span className="font-mono text-slate-200">{padding} px</span>
+              <span className="font-mono text-slate-800 dark:text-slate-200">{padding} px</span>
             </div>
             <input
               type="range"
@@ -194,15 +196,15 @@ export const BackgroundEditor: React.FC = () => {
               max="120"
               value={padding}
               onChange={(e) => setPadding(Number(e.target.value))}
-              className="w-full accent-sky-400 cursor-pointer"
+              className="w-full accent-sky-500 cursor-pointer"
             />
           </div>
 
           {/* Corner Radius Slider */}
           <div>
-            <div className="flex justify-between text-xs text-slate-400 mb-1">
+            <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
               <span>Corner Radius</span>
-              <span className="font-mono text-slate-200">{cornerRadius} px</span>
+              <span className="font-mono text-slate-800 dark:text-slate-200">{cornerRadius} px</span>
             </div>
             <input
               type="range"
@@ -210,15 +212,15 @@ export const BackgroundEditor: React.FC = () => {
               max="60"
               value={cornerRadius}
               onChange={(e) => setCornerRadius(Number(e.target.value))}
-              className="w-full accent-sky-400 cursor-pointer"
+              className="w-full accent-sky-500 cursor-pointer"
             />
           </div>
 
           {/* Shadow Blur Slider */}
           <div>
-            <div className="flex justify-between text-xs text-slate-400 mb-1">
+            <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
               <span>Drop Shadow Blur</span>
-              <span className="font-mono text-slate-200">{shadowBlur} px</span>
+              <span className="font-mono text-slate-800 dark:text-slate-200">{shadowBlur} px</span>
             </div>
             <input
               type="range"
@@ -226,12 +228,12 @@ export const BackgroundEditor: React.FC = () => {
               max="60"
               value={shadowBlur}
               onChange={(e) => setShadowBlur(Number(e.target.value))}
-              className="w-full accent-sky-400 cursor-pointer"
+              className="w-full accent-sky-500 cursor-pointer"
             />
           </div>
 
           {/* Actions */}
-          <div className="pt-3 border-t border-slate-800 space-y-2">
+          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
             <button
               onClick={handleApply}
               disabled={store.isProcessing}
@@ -242,7 +244,7 @@ export const BackgroundEditor: React.FC = () => {
             </button>
             <button
               onClick={() => store.setActiveModal(null)}
-              className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs transition-colors"
+              className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs transition-colors"
             >
               Cancel
             </button>

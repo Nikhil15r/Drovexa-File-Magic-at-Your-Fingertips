@@ -76,7 +76,7 @@ export const AdjustmentsEditor: React.FC = () => {
     >
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Live Image Preview */}
-        <div className="flex-1 min-h-[380px] max-h-[500px] bg-slate-950/80 rounded-2xl border border-slate-800 p-6 flex items-center justify-center overflow-hidden">
+        <div className="flex-1 min-h-[380px] max-h-[500px] bg-slate-100/90 dark:bg-slate-950/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 flex items-center justify-center overflow-hidden">
           {file.thumbnailData && (
             <img
               src={file.thumbnailData}
@@ -89,11 +89,11 @@ export const AdjustmentsEditor: React.FC = () => {
 
         {/* Sidebar Sliders */}
         <div className="w-full lg:w-80 space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Controls</span>
+          <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Controls</span>
             <button
               onClick={handleReset}
-              className="flex items-center gap-1 text-[11px] font-semibold text-slate-400 hover:text-sky-400 transition-colors"
+              className="flex items-center gap-1 text-[11px] font-semibold text-slate-500 dark:text-slate-400 hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
             >
               <RotateCcw className="w-3 h-3" />
               <span>Reset All</span>
@@ -102,9 +102,9 @@ export const AdjustmentsEditor: React.FC = () => {
 
           {/* Brightness */}
           <div>
-            <div className="flex justify-between text-xs text-slate-400 mb-1">
+            <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
               <span>Brightness</span>
-              <span className="font-mono text-slate-200">{options.brightness > 0 ? `+${options.brightness}` : options.brightness}</span>
+              <span className="font-mono text-slate-800 dark:text-slate-200">{options.brightness > 0 ? `+${options.brightness}` : options.brightness}</span>
             </div>
             <input
               type="range"
@@ -112,15 +112,15 @@ export const AdjustmentsEditor: React.FC = () => {
               max="100"
               value={options.brightness}
               onChange={(e) => setOptions({ ...options, brightness: Number(e.target.value) })}
-              className="w-full accent-orange-400 cursor-pointer"
+              className="w-full accent-orange-500 cursor-pointer"
             />
           </div>
 
           {/* Contrast */}
           <div>
-            <div className="flex justify-between text-xs text-slate-400 mb-1">
+            <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
               <span>Contrast</span>
-              <span className="font-mono text-slate-200">{options.contrast > 0 ? `+${options.contrast}` : options.contrast}</span>
+              <span className="font-mono text-slate-800 dark:text-slate-200">{options.contrast > 0 ? `+${options.contrast}` : options.contrast}</span>
             </div>
             <input
               type="range"
@@ -128,15 +128,15 @@ export const AdjustmentsEditor: React.FC = () => {
               max="100"
               value={options.contrast}
               onChange={(e) => setOptions({ ...options, contrast: Number(e.target.value) })}
-              className="w-full accent-orange-400 cursor-pointer"
+              className="w-full accent-orange-500 cursor-pointer"
             />
           </div>
 
           {/* Saturation */}
           <div>
-            <div className="flex justify-between text-xs text-slate-400 mb-1">
+            <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
               <span>Saturation</span>
-              <span className="font-mono text-slate-200">{options.saturation > 0 ? `+${options.saturation}` : options.saturation}</span>
+              <span className="font-mono text-slate-800 dark:text-slate-200">{options.saturation > 0 ? `+${options.saturation}` : options.saturation}</span>
             </div>
             <input
               type="range"
@@ -144,15 +144,15 @@ export const AdjustmentsEditor: React.FC = () => {
               max="100"
               value={options.saturation}
               onChange={(e) => setOptions({ ...options, saturation: Number(e.target.value) })}
-              className="w-full accent-orange-400 cursor-pointer"
+              className="w-full accent-orange-500 cursor-pointer"
             />
           </div>
 
           {/* Hue Rotation */}
           <div>
-            <div className="flex justify-between text-xs text-slate-400 mb-1">
+            <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
               <span>Hue Shift</span>
-              <span className="font-mono text-slate-200">{options.hue}°</span>
+              <span className="font-mono text-slate-800 dark:text-slate-200">{options.hue}°</span>
             </div>
             <input
               type="range"
@@ -160,15 +160,15 @@ export const AdjustmentsEditor: React.FC = () => {
               max="180"
               value={options.hue}
               onChange={(e) => setOptions({ ...options, hue: Number(e.target.value) })}
-              className="w-full accent-orange-400 cursor-pointer"
+              className="w-full accent-orange-500 cursor-pointer"
             />
           </div>
 
           {/* Blur */}
           <div>
-            <div className="flex justify-between text-xs text-slate-400 mb-1">
+            <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
               <span>Blur</span>
-              <span className="font-mono text-slate-200">{options.blur} px</span>
+              <span className="font-mono text-slate-800 dark:text-slate-200">{options.blur} px</span>
             </div>
             <input
               type="range"
@@ -176,15 +176,15 @@ export const AdjustmentsEditor: React.FC = () => {
               max="20"
               value={options.blur}
               onChange={(e) => setOptions({ ...options, blur: Number(e.target.value) })}
-              className="w-full accent-orange-400 cursor-pointer"
+              className="w-full accent-orange-500 cursor-pointer"
             />
           </div>
 
           {/* Sharpen */}
           <div>
-            <div className="flex justify-between text-xs text-slate-400 mb-1">
+            <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
               <span>Sharpen</span>
-              <span className="font-mono text-slate-200">{options.sharpen}</span>
+              <span className="font-mono text-slate-800 dark:text-slate-200">{options.sharpen}</span>
             </div>
             <input
               type="range"
@@ -192,7 +192,7 @@ export const AdjustmentsEditor: React.FC = () => {
               max="10"
               value={options.sharpen}
               onChange={(e) => setOptions({ ...options, sharpen: Number(e.target.value) })}
-              className="w-full accent-orange-400 cursor-pointer"
+              className="w-full accent-orange-500 cursor-pointer"
             />
           </div>
 
@@ -210,8 +210,8 @@ export const AdjustmentsEditor: React.FC = () => {
                   onClick={() => setOptions({ ...options, [t.id]: !active })}
                   className={`py-2 rounded-xl text-xs font-semibold border transition-all ${
                     active
-                      ? 'bg-orange-500/20 border-orange-400 text-orange-300'
-                      : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-700'
+                      ? 'bg-orange-500/15 border-orange-500 text-orange-600 dark:text-orange-300 shadow-sm'
+                      : 'bg-slate-100 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                   }`}
                 >
                   {t.label}
@@ -221,7 +221,7 @@ export const AdjustmentsEditor: React.FC = () => {
           </div>
 
           {/* Actions */}
-          <div className="pt-3 border-t border-slate-800 space-y-2">
+          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
             <button
               onClick={handleApply}
               disabled={store.isProcessing}
@@ -232,7 +232,7 @@ export const AdjustmentsEditor: React.FC = () => {
             </button>
             <button
               onClick={() => store.setActiveModal(null)}
-              className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs transition-colors"
+              className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs transition-colors"
             >
               Cancel
             </button>

@@ -70,34 +70,34 @@ export const PdfViewerModal: React.FC = () => {
     >
       <div className="space-y-6">
         {/* Document Card Preview Area */}
-        <div className="min-h-[380px] bg-slate-950/80 rounded-2xl border border-slate-800 p-8 flex flex-col items-center justify-center text-center">
-          <div className="w-24 h-24 rounded-3xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 mb-4 shadow-xl">
+        <div className="min-h-[380px] bg-slate-100/90 dark:bg-slate-950/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 flex flex-col items-center justify-center text-center">
+          <div className="w-24 h-24 rounded-3xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-500 dark:text-rose-400 mb-4 shadow-xl">
             <FileText className="w-12 h-12" />
           </div>
 
-          <h3 className="text-lg font-bold text-white mb-1 truncate max-w-lg">{file.name}</h3>
-          <p className="text-xs text-slate-400 mb-6">
+          <h3 className="text-lg font-bold text-slate-800 dark:text-white mb-1 truncate max-w-lg">{file.name}</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
             {file.formattedSize} • Page {currentPage} of {totalPages}
           </p>
 
           {/* Page Navigator */}
-          <div className="flex items-center gap-3 p-1.5 rounded-2xl bg-slate-900 border border-slate-700/80 shadow-lg">
+          <div className="flex items-center gap-3 p-1.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/80 shadow-md">
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage <= 1}
-              className="p-2 rounded-xl hover:bg-slate-800 text-slate-300 disabled:opacity-30 transition-colors"
+              className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-30 transition-colors"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
 
-            <span className="text-xs font-mono font-bold text-sky-400 px-3">
+            <span className="text-xs font-mono font-bold text-sky-600 dark:text-sky-400 px-3">
               Page {currentPage} / {totalPages}
             </span>
 
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage >= totalPages}
-              className="p-2 rounded-xl hover:bg-slate-800 text-slate-300 disabled:opacity-30 transition-colors"
+              className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-30 transition-colors"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -108,49 +108,49 @@ export const PdfViewerModal: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <button
             onClick={() => handleRotateCurrentPage(90)}
-            className="p-3.5 rounded-2xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700 flex items-center gap-3 transition-colors text-left"
+            className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center gap-3 transition-colors text-left shadow-sm"
           >
-            <div className="w-9 h-9 rounded-xl bg-rose-500/20 text-rose-300 flex items-center justify-center flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-rose-500/20 text-rose-500 dark:text-rose-300 flex items-center justify-center flex-shrink-0">
               <RotateCw className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-xs font-bold text-white">Rotate Page 90°</div>
-              <div className="text-[10px] text-slate-400">Reorient page {currentPage}</div>
+              <div className="text-xs font-bold text-slate-800 dark:text-white">Rotate Page 90°</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400">Reorient page {currentPage}</div>
             </div>
           </button>
 
           <button
             onClick={handleExtractCurrentPage}
-            className="p-3.5 rounded-2xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700 flex items-center gap-3 transition-colors text-left"
+            className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center gap-3 transition-colors text-left shadow-sm"
           >
-            <div className="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-300 flex items-center justify-center flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-500 dark:text-blue-300 flex items-center justify-center flex-shrink-0">
               <Download className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-xs font-bold text-white">Extract Page</div>
-              <div className="text-[10px] text-slate-400">Save page {currentPage} as new PDF</div>
+              <div className="text-xs font-bold text-slate-800 dark:text-white">Extract Page</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400">Save page {currentPage} as new PDF</div>
             </div>
           </button>
 
           <button
             onClick={handleOpenNative}
-            className="p-3.5 rounded-2xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700 flex items-center gap-3 transition-colors text-left"
+            className="p-3.5 rounded-2xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center gap-3 transition-colors text-left shadow-sm"
           >
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center flex-shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-500 dark:text-emerald-300 flex items-center justify-center flex-shrink-0">
               <ExternalLink className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-xs font-bold text-white">Open in Reader</div>
-              <div className="text-[10px] text-slate-400">View in default Windows app</div>
+              <div className="text-xs font-bold text-slate-800 dark:text-white">Open in Reader</div>
+              <div className="text-[10px] text-slate-500 dark:text-slate-400">View in default Windows app</div>
             </div>
           </button>
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end pt-4 border-t border-slate-800">
+        <div className="flex items-center justify-end pt-4 border-t border-slate-200 dark:border-slate-800">
           <button
             onClick={() => store.setActiveModal(null)}
-            className="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs transition-colors"
+            className="px-6 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs transition-colors"
           >
             Close Viewer
           </button>

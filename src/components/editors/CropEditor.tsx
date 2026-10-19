@@ -94,7 +94,7 @@ export const CropEditor: React.FC = () => {
         {/* Main Crop Canvas Area */}
         <div 
           ref={containerRef}
-          className="flex-1 relative min-h-[420px] max-h-[520px] bg-slate-950/80 rounded-2xl border border-slate-800 flex items-center justify-center p-4 overflow-hidden select-none"
+          className="flex-1 relative min-h-[420px] max-h-[520px] bg-slate-100 dark:bg-slate-950/80 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center p-4 overflow-hidden select-none"
         >
           {file.thumbnailData && (
             <div className="relative max-h-full max-w-full">
@@ -112,7 +112,7 @@ export const CropEditor: React.FC = () => {
                   width: `${cropBox.width}%`,
                   height: `${cropBox.height}%`,
                 }}
-                className="absolute border-2 border-sky-400 bg-sky-500/10 shadow-2xl rounded-sm cursor-move pointer-events-auto"
+                className="absolute border-2 border-sky-500 bg-sky-500/15 shadow-2xl rounded-sm cursor-move pointer-events-auto"
               >
                 {/* 3x3 Grid lines */}
                 <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 pointer-events-none">
@@ -128,7 +128,7 @@ export const CropEditor: React.FC = () => {
                 </div>
 
                 {/* Pixel readout badge */}
-                <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-slate-900/90 text-[10px] font-mono text-sky-300 border border-sky-500/40 pointer-events-none shadow">
+                <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-white/95 dark:bg-slate-900/90 text-[10px] font-mono text-sky-600 dark:text-sky-300 border border-sky-400 pointer-events-none shadow">
                   {pixelCropW} × {pixelCropH} px
                 </div>
               </div>
@@ -139,7 +139,7 @@ export const CropEditor: React.FC = () => {
         {/* Sidebar Controls */}
         <div className="w-full lg:w-72 flex flex-col justify-between space-y-6">
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
               Aspect Ratio Presets
             </h4>
 
@@ -157,8 +157,8 @@ export const CropEditor: React.FC = () => {
                   onClick={() => handleApplyPreset(p.ratio)}
                   className={`px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${
                     aspectRatio === p.ratio
-                      ? 'bg-sky-500/20 border-sky-400 text-sky-300 shadow-md shadow-sky-500/10'
-                      : 'bg-slate-800/80 border-slate-700 text-slate-300 hover:bg-slate-700'
+                      ? 'bg-sky-50 dark:bg-sky-500/20 border-sky-500 text-sky-600 dark:text-sky-300 shadow-md shadow-sky-500/10'
+                      : 'bg-slate-100 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                   }`}
                 >
                   {p.label}
@@ -167,14 +167,14 @@ export const CropEditor: React.FC = () => {
             </div>
 
             {/* Quick adjust sliders */}
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
               Fine-tune Area
             </h4>
             <div className="space-y-3">
               <div>
-                <div className="flex justify-between text-xs text-slate-400 mb-1">
+                <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
                   <span>Width scale</span>
-                  <span className="text-slate-200 font-mono">{Math.round(cropBox.width)}%</span>
+                  <span className="text-slate-800 dark:text-slate-200 font-mono">{Math.round(cropBox.width)}%</span>
                 </div>
                 <input
                   type="range"
@@ -194,9 +194,9 @@ export const CropEditor: React.FC = () => {
               </div>
 
               <div>
-                <div className="flex justify-between text-xs text-slate-400 mb-1">
+                <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
                   <span>Height scale</span>
-                  <span className="text-slate-200 font-mono">{Math.round(cropBox.height)}%</span>
+                  <span className="text-slate-800 dark:text-slate-200 font-mono">{Math.round(cropBox.height)}%</span>
                 </div>
                 <input
                   type="range"
@@ -218,7 +218,7 @@ export const CropEditor: React.FC = () => {
           </div>
 
           {/* Action buttons */}
-          <div className="space-y-2 pt-4 border-t border-slate-800">
+          <div className="space-y-2 pt-4 border-t border-slate-200 dark:border-slate-800">
             <button
               onClick={handleApplyCrop}
               disabled={store.isProcessing}
@@ -230,7 +230,7 @@ export const CropEditor: React.FC = () => {
 
             <button
               onClick={() => store.setActiveModal(null)}
-              className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs transition-colors"
+              className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 dark:border-transparent dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs transition-colors"
             >
               Cancel
             </button>

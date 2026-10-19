@@ -85,7 +85,7 @@ export const AnnotateEditor: React.FC = () => {
     >
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Live Canvas Preview */}
-        <div className="flex-1 relative min-h-[380px] max-h-[480px] bg-slate-950/80 rounded-2xl border border-slate-800 p-6 flex items-center justify-center overflow-hidden">
+        <div className="flex-1 relative min-h-[380px] max-h-[480px] bg-slate-100/90 dark:bg-slate-950/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 flex items-center justify-center overflow-hidden">
           {file.thumbnailData && (
             <div className="relative max-h-full max-w-full flex items-center justify-center">
               <img
@@ -132,11 +132,13 @@ export const AnnotateEditor: React.FC = () => {
         {/* Sidebar Controls */}
         <div className="w-full lg:w-80 space-y-5">
           {/* Tabs */}
-          <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-950 rounded-xl border border-slate-800">
+          <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800">
             <button
               onClick={() => setTab('text')}
               className={`py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                tab === 'text' ? 'bg-sky-500 text-white shadow' : 'text-slate-400 hover:text-white'
+                tab === 'text' 
+                  ? 'bg-sky-500 text-white shadow' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Text Caption
@@ -144,7 +146,9 @@ export const AnnotateEditor: React.FC = () => {
             <button
               onClick={() => setTab('watermark')}
               className={`py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                tab === 'watermark' ? 'bg-sky-500 text-white shadow' : 'text-slate-400 hover:text-white'
+                tab === 'watermark' 
+                  ? 'bg-sky-500 text-white shadow' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Watermark
@@ -154,20 +158,20 @@ export const AnnotateEditor: React.FC = () => {
           {tab === 'text' ? (
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-semibold text-slate-400 block mb-1">Caption Text</label>
+                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Caption Text</label>
                 <input
                   type="text"
                   value={captionText}
                   onChange={(e) => setCaptionText(e.target.value)}
                   placeholder="Enter text overlay..."
-                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs focus:outline-none focus:border-sky-500"
+                  className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-xs focus:outline-none focus:border-sky-500 shadow-sm"
                 />
               </div>
 
               <div>
-                <div className="flex justify-between text-xs text-slate-400 mb-1">
+                <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
                   <span>Font Size</span>
-                  <span className="font-mono text-slate-200">{fontSize} px</span>
+                  <span className="font-mono text-slate-800 dark:text-slate-200">{fontSize} px</span>
                 </div>
                 <input
                   type="range"
@@ -175,12 +179,12 @@ export const AnnotateEditor: React.FC = () => {
                   max="120"
                   value={fontSize}
                   onChange={(e) => setFontSize(Number(e.target.value))}
-                  className="w-full accent-sky-400 cursor-pointer"
+                  className="w-full accent-sky-500 cursor-pointer"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-400 block mb-1.5">Text Color</label>
+                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">Text Color</label>
                 <div className="flex items-center gap-2">
                   {['#ffffff', '#000000', '#f43f5e', '#38bdf8', '#fbbf24', '#4ade80'].map((c) => (
                     <button
@@ -188,7 +192,7 @@ export const AnnotateEditor: React.FC = () => {
                       onClick={() => setTextColor(c)}
                       style={{ backgroundColor: c }}
                       className={`w-6 h-6 rounded-lg border transition-transform ${
-                        textColor === c ? 'scale-110 border-sky-400' : 'border-slate-700 hover:scale-105'
+                        textColor === c ? 'scale-110 border-sky-500 shadow-sm' : 'border-slate-300 dark:border-slate-700 hover:scale-105'
                       }`}
                     />
                   ))}
@@ -196,7 +200,7 @@ export const AnnotateEditor: React.FC = () => {
               </div>
 
               <div className="pt-2">
-                <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-300">
+                <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-600 dark:text-slate-300">
                   <input
                     type="checkbox"
                     checked={hasBadge}
@@ -209,7 +213,7 @@ export const AnnotateEditor: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-white mb-2">
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-800 dark:text-white mb-2">
                 <input
                   type="checkbox"
                   checked={watermarkEnabled}
@@ -222,19 +226,19 @@ export const AnnotateEditor: React.FC = () => {
               {watermarkEnabled && (
                 <>
                   <div>
-                    <label className="text-xs font-semibold text-slate-400 block mb-1">Watermark Text</label>
+                    <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Watermark Text</label>
                     <input
                       type="text"
                       value={watermarkText}
                       onChange={(e) => setWatermarkText(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-bold uppercase focus:outline-none focus:border-sky-500"
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-xs font-bold uppercase focus:outline-none focus:border-sky-500 shadow-sm"
                     />
                   </div>
 
                   <div>
-                    <div className="flex justify-between text-xs text-slate-400 mb-1">
+                    <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
                       <span>Opacity</span>
-                      <span className="font-mono text-slate-200">{watermarkOpacity}%</span>
+                      <span className="font-mono text-slate-800 dark:text-slate-200">{watermarkOpacity}%</span>
                     </div>
                     <input
                       type="range"
@@ -242,12 +246,12 @@ export const AnnotateEditor: React.FC = () => {
                       max="100"
                       value={watermarkOpacity}
                       onChange={(e) => setWatermarkOpacity(Number(e.target.value))}
-                      className="w-full accent-sky-400 cursor-pointer"
+                      className="w-full accent-sky-500 cursor-pointer"
                     />
                   </div>
 
                   <div>
-                    <label className="text-xs font-semibold text-slate-400 block mb-1.5">Placement</label>
+                    <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">Placement</label>
                     <div className="grid grid-cols-3 gap-1.5">
                       {(['diagonal', 'center', 'bottom-right'] as const).map((pos) => (
                         <button
@@ -255,8 +259,8 @@ export const AnnotateEditor: React.FC = () => {
                           onClick={() => setWatermarkPosition(pos)}
                           className={`py-1.5 px-2 rounded-lg text-[10px] font-bold uppercase border transition-all ${
                             watermarkPosition === pos
-                              ? 'bg-sky-500/20 border-sky-400 text-sky-300'
-                              : 'bg-slate-800/80 border-slate-700 text-slate-400'
+                              ? 'bg-sky-500/20 border-sky-400 text-sky-600 dark:text-sky-300 font-extrabold shadow-sm'
+                              : 'bg-slate-100 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
                           }`}
                         >
                           {pos.replace('-', ' ')}
@@ -270,7 +274,7 @@ export const AnnotateEditor: React.FC = () => {
           )}
 
           {/* Footer Actions */}
-          <div className="pt-4 border-t border-slate-800 space-y-2">
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
             <button
               onClick={handleApply}
               disabled={store.isProcessing}
@@ -281,7 +285,7 @@ export const AnnotateEditor: React.FC = () => {
             </button>
             <button
               onClick={() => store.setActiveModal(null)}
-              className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs transition-colors"
+              className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs transition-colors"
             >
               Cancel
             </button>

@@ -52,50 +52,50 @@ export const RadialMenuAltGrid: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-[calc(100vh-3rem)] p-8 overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950">
+    <div className="w-full h-[calc(100vh-3rem)] p-8 overflow-y-auto bg-gradient-to-b from-slate-50 via-sky-50/20 to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors duration-200">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8 items-start">
         {/* Left Column: File Summary Card */}
-        <div className="w-full md:w-80 flex-shrink-0 bg-slate-900/90 border border-slate-700/80 rounded-3xl p-6 shadow-2xl backdrop-blur-xl">
+        <div className="w-full md:w-80 flex-shrink-0 bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700/80 rounded-3xl p-6 shadow-xl shadow-slate-200/50 dark:shadow-2xl backdrop-blur-xl">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-sky-400">Selected File</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">Selected File</span>
             <button
               onClick={() => store.setActiveFile(null)}
-              className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white"
+              className="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-800 dark:hover:text-white"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="w-full h-48 rounded-2xl bg-slate-800/80 border border-slate-700/60 overflow-hidden mb-4 flex items-center justify-center">
+          <div className="w-full h-48 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 overflow-hidden mb-4 flex items-center justify-center">
             {file.thumbnailData ? (
               <img src={file.thumbnailData} alt={file.name} className="w-full h-full object-contain" />
             ) : (
-              <FileText className="w-16 h-16 text-slate-500" />
+              <FileText className="w-16 h-16 text-slate-400 dark:text-slate-500" />
             )}
           </div>
 
-          <h3 className="text-base font-bold text-white truncate mb-1" title={file.name}>
+          <h3 className="text-base font-bold text-slate-900 dark:text-white truncate mb-1" title={file.name}>
             {file.name}
           </h3>
-          <p className="text-xs text-slate-400 mb-4">{file.formattedSize}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">{file.formattedSize}</p>
 
           {file.dimensions && (
-            <div className="flex items-center justify-between py-2 border-t border-slate-800 text-xs">
-              <span className="text-slate-400">Dimensions</span>
-              <span className="font-semibold text-slate-200">{file.dimensions.width} × {file.dimensions.height} px</span>
+            <div className="flex items-center justify-between py-2 border-t border-slate-200 dark:border-slate-800 text-xs">
+              <span className="text-slate-500 dark:text-slate-400">Dimensions</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">{file.dimensions.width} × {file.dimensions.height} px</span>
             </div>
           )}
 
-          <div className="flex items-center justify-between py-2 border-t border-slate-800 text-xs mb-4">
-            <span className="text-slate-400">Format</span>
-            <span className="font-semibold uppercase text-sky-400">{file.extension.replace('.', '')}</span>
+          <div className="flex items-center justify-between py-2 border-t border-slate-200 dark:border-slate-800 text-xs mb-4">
+            <span className="text-slate-500 dark:text-slate-400">Format</span>
+            <span className="font-semibold uppercase text-sky-600 dark:text-sky-400">{file.extension.replace('.', '')}</span>
           </div>
 
           <button
             onClick={() => window.electronAPI?.showItemInFolder(file.path)}
-            className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-medium text-xs flex items-center justify-center gap-2 transition-all"
+            className="w-full py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-medium text-xs flex items-center justify-center gap-2 transition-all shadow-sm"
           >
-            <FolderOpen className="w-4 h-4 text-sky-400" />
+            <FolderOpen className="w-4 h-4 text-sky-500 dark:text-sky-400" />
             <span>Show in Windows Explorer</span>
           </button>
         </div>
@@ -103,8 +103,8 @@ export const RadialMenuAltGrid: React.FC = () => {
         {/* Right Column: Action Cards Grid */}
         <div className="flex-1 w-full">
           <div className="mb-4">
-            <h2 className="text-xl font-bold text-white">Available Operations</h2>
-            <p className="text-xs text-slate-400">Choose a tool to perform instantaneous local processing</p>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Available Operations</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Choose a tool to perform instantaneous local processing</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -114,19 +114,19 @@ export const RadialMenuAltGrid: React.FC = () => {
                 <button
                   key={act.id}
                   onClick={() => handleActionClick(act.id)}
-                  className="group flex items-start gap-4 p-4 rounded-2xl bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800 hover:border-sky-500/50 text-left transition-all duration-200 shadow-lg hover:shadow-sky-500/10 active:scale-[0.98]"
+                  className="group flex items-start gap-4 p-4 rounded-2xl bg-white/95 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800/90 border border-slate-200 dark:border-slate-800 hover:border-sky-400 dark:hover:border-sky-500/50 text-left transition-all duration-200 shadow-md shadow-slate-200/50 dark:shadow-none hover:shadow-xl hover:shadow-sky-500/10 active:scale-[0.98]"
                 >
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-tr ${act.color} flex items-center justify-center text-white shadow-md flex-shrink-0 group-hover:scale-105 transition-transform`}>
                     <Icon className="w-6 h-6" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm font-bold text-white group-hover:text-sky-300 transition-colors">
+                      <span className="text-sm font-bold text-slate-800 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-300 transition-colors">
                         {act.label}
                       </span>
-                      <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-sky-400 group-hover:translate-x-1 transition-all" />
+                      <ArrowRight className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-sky-500 dark:group-hover:text-sky-400 group-hover:translate-x-1 transition-all" />
                     </div>
-                    <p className="text-xs text-slate-400 leading-relaxed">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                       {act.desc}
                     </p>
                   </div>

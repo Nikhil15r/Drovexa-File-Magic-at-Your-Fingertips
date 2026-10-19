@@ -99,24 +99,24 @@ export const CompressEditor: React.FC = () => {
       <div className="space-y-6">
         {/* Comparison Stats Card */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
-            <span className="text-[11px] font-semibold text-slate-400 block mb-1">Original Size</span>
-            <span className="text-lg font-bold text-slate-200">{file.formattedSize}</span>
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
+            <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">Original Size</span>
+            <span className="text-lg font-bold text-slate-800 dark:text-slate-200">{file.formattedSize}</span>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
-            <span className="text-[11px] font-semibold text-slate-400 block mb-1">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
+            <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">
               Estimated Output
             </span>
-            <span className="text-lg font-bold text-sky-400">
+            <span className="text-lg font-bold text-sky-600 dark:text-sky-400">
               {isEstimating ? 'Estimating...' : estimatedSize ? formatBytes(estimatedSize) : 'Calculating...'}
             </span>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 flex flex-col justify-center">
-            <span className="text-[11px] font-semibold text-slate-400 block mb-1">Space Saved</span>
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 flex flex-col justify-center">
+            <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 block mb-1">Space Saved</span>
             {reductionPct !== null ? (
-              <span className={`text-lg font-bold ${reductionPct > 0 ? 'text-emerald-400' : 'text-slate-400'}`}>
+              <span className={`text-lg font-bold ${reductionPct > 0 ? 'text-emerald-500 dark:text-emerald-400' : 'text-slate-400'}`}>
                 {reductionPct > 0 ? `-${reductionPct}% Reduction` : 'No size change'}
               </span>
             ) : (
@@ -126,13 +126,13 @@ export const CompressEditor: React.FC = () => {
         </div>
 
         {/* Quality Slider */}
-        <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3">
+        <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-sm font-bold text-white block">Image Quality</span>
-              <span className="text-xs text-slate-400">Balance file size and fidelity</span>
+              <span className="text-sm font-bold text-slate-900 dark:text-white block">Image Quality</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">Balance file size and fidelity</span>
             </div>
-            <span className="text-lg font-extrabold text-sky-400 font-mono px-3 py-1 rounded-xl bg-sky-500/10 border border-sky-500/20">
+            <span className="text-lg font-extrabold text-sky-600 dark:text-sky-400 font-mono px-3 py-1 rounded-xl bg-sky-50 dark:bg-sky-500/10 border border-sky-200 dark:border-sky-500/20">
               {quality}%
             </span>
           </div>
@@ -143,10 +143,10 @@ export const CompressEditor: React.FC = () => {
             max="100"
             value={quality}
             onChange={(e) => setQuality(Number(e.target.value))}
-            className="w-full accent-sky-400 cursor-pointer h-2 bg-slate-800 rounded-lg"
+            className="w-full accent-sky-400 cursor-pointer h-2 bg-slate-200 dark:bg-slate-800 rounded-lg"
           />
 
-          <div className="flex justify-between text-[11px] font-semibold text-slate-500">
+          <div className="flex justify-between text-[11px] font-semibold text-slate-400 dark:text-slate-500">
             <span>Smallest File (10%)</span>
             <span>Balanced (75%)</span>
             <span>Visually Lossless (90%)</span>
@@ -156,7 +156,7 @@ export const CompressEditor: React.FC = () => {
 
         {/* Target Format Options */}
         <div>
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2">
+          <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-2">
             Target Compression Format
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -171,12 +171,12 @@ export const CompressEditor: React.FC = () => {
                 onClick={() => setFormat(f.id as any)}
                 className={`p-3 rounded-2xl border text-left transition-all ${
                   format === f.id
-                    ? 'bg-sky-500/15 border-sky-400 text-white shadow-md shadow-sky-500/10'
-                    : 'bg-slate-800/60 border-slate-700/80 text-slate-300 hover:bg-slate-800'
+                    ? 'bg-sky-50 dark:bg-sky-500/15 border-sky-400 text-slate-900 dark:text-white shadow-md shadow-sky-500/10'
+                    : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
               >
                 <div className="text-xs font-bold">{f.label}</div>
-                <div className="text-[10px] text-slate-400 mt-0.5">{f.desc}</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">{f.desc}</div>
               </button>
             ))}
           </div>
@@ -184,8 +184,8 @@ export const CompressEditor: React.FC = () => {
 
         {/* Live Preview Comparison Image */}
         {previewUrl && (
-          <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 flex flex-col items-center">
-            <span className="text-[11px] font-semibold text-slate-400 mb-2">Compressed Live Preview</span>
+          <div className="p-4 rounded-2xl bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 flex flex-col items-center">
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-2">Compressed Live Preview</span>
             <img
               src={previewUrl}
               alt="Compressed preview"
@@ -195,10 +195,10 @@ export const CompressEditor: React.FC = () => {
         )}
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
           <button
             onClick={() => store.setActiveModal(null)}
-            className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs transition-colors"
+            className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 dark:border-transparent dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs transition-colors"
           >
             Cancel
           </button>

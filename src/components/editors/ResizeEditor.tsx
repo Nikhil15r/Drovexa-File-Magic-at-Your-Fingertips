@@ -93,16 +93,16 @@ export const ResizeEditor: React.FC = () => {
     >
       <div className="space-y-6">
         {/* Dimensions Input Card */}
-        <div className="p-5 rounded-2xl bg-slate-950/70 border border-slate-800 flex items-center justify-between gap-4">
+        <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4">
           <div className="flex-1">
-            <label className="text-xs font-semibold text-slate-400 block mb-1.5">Width (px)</label>
+            <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 block mb-1.5">Width (px)</label>
             <input
               type="number"
               min="1"
               max="16000"
               value={width}
               onChange={(e) => handleWidthChange(Math.max(1, Number(e.target.value)))}
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white font-mono text-base focus:outline-none focus:border-sky-500"
+              className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white font-mono text-base focus:outline-none focus:border-sky-500"
             />
           </div>
 
@@ -112,8 +112,8 @@ export const ResizeEditor: React.FC = () => {
               onClick={() => setLockRatio(!lockRatio)}
               className={`p-2.5 rounded-xl border transition-all ${
                 lockRatio 
-                  ? 'bg-sky-500/20 border-sky-400 text-sky-400' 
-                  : 'bg-slate-800 border-slate-700 text-slate-400'
+                  ? 'bg-sky-50 dark:bg-sky-500/20 border-sky-400 text-sky-600 dark:text-sky-400' 
+                  : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400'
               }`}
               title={lockRatio ? 'Aspect ratio locked' : 'Aspect ratio unlocked'}
             >
@@ -122,21 +122,21 @@ export const ResizeEditor: React.FC = () => {
           </div>
 
           <div className="flex-1">
-            <label className="text-xs font-semibold text-slate-400 block mb-1.5">Height (px)</label>
+            <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 block mb-1.5">Height (px)</label>
             <input
               type="number"
               min="1"
               max="16000"
               value={height}
               onChange={(e) => handleHeightChange(Math.max(1, Number(e.target.value)))}
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white font-mono text-base focus:outline-none focus:border-sky-500"
+              className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white font-mono text-base focus:outline-none focus:border-sky-500"
             />
           </div>
         </div>
 
         {/* Quick Percentage Scaling */}
         <div>
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2">
+          <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-2">
             Quick Scale
           </label>
           <div className="grid grid-cols-5 gap-2">
@@ -144,7 +144,7 @@ export const ResizeEditor: React.FC = () => {
               <button
                 key={pct}
                 onClick={() => handleScalePercentage(pct)}
-                className="py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 transition-colors"
+                className="py-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors"
               >
                 {pct}%
               </button>
@@ -154,7 +154,7 @@ export const ResizeEditor: React.FC = () => {
 
         {/* Common Preset Dimensions */}
         <div>
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-2">
+          <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-2">
             Standard Presets
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -169,20 +169,20 @@ export const ResizeEditor: React.FC = () => {
               <button
                 key={p.label}
                 onClick={() => handleApplyPreset(p.w, p.h)}
-                className="p-2.5 rounded-xl bg-slate-800/50 hover:bg-slate-700/80 border border-slate-700/80 text-left transition-all"
+                className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700/80 text-left transition-all"
               >
-                <div className="text-xs font-semibold text-white">{p.label}</div>
-                <div className="text-[10px] text-slate-400 font-mono mt-0.5">{p.w} × {p.h} px</div>
+                <div className="text-xs font-semibold text-slate-800 dark:text-white">{p.label}</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">{p.w} × {p.h} px</div>
               </button>
             ))}
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
           <button
             onClick={() => store.setActiveModal(null)}
-            className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs transition-colors"
+            className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 dark:border-transparent dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs transition-colors"
           >
             Cancel
           </button>

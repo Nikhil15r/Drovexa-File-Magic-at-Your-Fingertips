@@ -64,20 +64,20 @@ export const ConvertModal: React.FC = () => {
     >
       <div className="space-y-6">
         {/* Source file info bar */}
-        <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
+        <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-sky-400 font-bold uppercase text-xs">
+            <div className="w-10 h-10 rounded-xl bg-slate-200/80 dark:bg-slate-800 flex items-center justify-center text-sky-600 dark:text-sky-400 font-bold uppercase text-xs">
               {currentExt}
             </div>
             <div>
-              <p className="text-sm font-bold text-white truncate max-w-sm">{file.name}</p>
-              <p className="text-xs text-slate-400">{file.formattedSize}</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-sm">{file.name}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{file.formattedSize}</p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400">Converting to:</span>
-            <span className="px-3 py-1 rounded-xl bg-purple-500/20 text-purple-300 font-extrabold uppercase text-xs border border-purple-500/30">
+            <span className="text-xs text-slate-500 dark:text-slate-400">Converting to:</span>
+            <span className="px-3 py-1 rounded-xl bg-purple-100 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300 font-extrabold uppercase text-xs border border-purple-200 dark:border-purple-500/30">
               .{targetFormat}
             </span>
           </div>
@@ -85,7 +85,7 @@ export const ConvertModal: React.FC = () => {
 
         {/* Format Grid */}
         <div>
-          <label className="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-3">
+          <label className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-3">
             Select Target Format
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
@@ -98,19 +98,19 @@ export const ConvertModal: React.FC = () => {
                   onClick={() => setTargetFormat(fmt.id)}
                   className={`p-3.5 rounded-2xl border text-left transition-all relative flex flex-col justify-between ${
                     isSelected
-                      ? 'bg-purple-500/15 border-purple-400 shadow-xl shadow-purple-500/10'
-                      : 'bg-slate-800/60 border-slate-700/80 hover:bg-slate-800 hover:border-slate-600'
+                      ? 'bg-purple-50 dark:bg-purple-500/15 border-purple-400 shadow-md shadow-purple-500/10'
+                      : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700/80 hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-bold text-white">{fmt.name}</span>
+                    <span className="text-sm font-bold text-slate-900 dark:text-white">{fmt.name}</span>
                     <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${
-                      isSelected ? 'bg-purple-400 text-purple-950' : 'bg-slate-700 text-slate-300'
+                      isSelected ? 'bg-purple-400 text-purple-950' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
                     }`}>
                       {fmt.badge}
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400 leading-tight">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-tight">
                     {fmt.desc}
                   </p>
                 </button>
@@ -121,10 +121,10 @@ export const ConvertModal: React.FC = () => {
 
         {/* Quality slider for lossy formats */}
         {['jpeg', 'webp', 'avif'].includes(targetFormat) && (
-          <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
             <div className="flex justify-between items-center text-xs">
-              <span className="font-semibold text-slate-300">Conversion Quality</span>
-              <span className="font-mono font-bold text-purple-400">{quality}%</span>
+              <span className="font-semibold text-slate-700 dark:text-slate-300">Conversion Quality</span>
+              <span className="font-mono font-bold text-purple-600 dark:text-purple-400">{quality}%</span>
             </div>
             <input
               type="range"
@@ -138,10 +138,10 @@ export const ConvertModal: React.FC = () => {
         )}
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
           <button
             onClick={() => store.setActiveModal(null)}
-            className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs transition-colors"
+            className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 dark:border-transparent dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs transition-colors"
           >
             Cancel
           </button>

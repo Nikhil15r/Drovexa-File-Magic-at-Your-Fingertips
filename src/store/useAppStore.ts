@@ -41,19 +41,33 @@ class AppStateManager {
   }
 
   private async init() {
-    if (typeof window !== 'undefined' && window.electronAPI) {
+    if (typeof window !== 'undefined') {
       try {
-        const loadedSettings = await window.electronAPI.getSettings();
-        if (loadedSettings) {
-          this.settings = loadedSettings;
-          this.applyTheme(this.settings.theme);
-          this.notify();
+        const localTheme = localStorage.getItem('uft-theme') as 'dark' | 'light' | 'system' | null;
+        if (localTheme) {
+          this.settings.theme = localTheme;
+          this.applyTheme(localTheme);
         }
-        const max = await window.electronAPI.isMaximized();
-        this.isWindowMaximized = max;
-        this.notify();
-      } catch (e) {
-        console.warn('Could not initialize electron settings', e);
+      } catch (e) {}
+
+      if (window.electronAPI) {
+        try {
+          const loadedSettings = await window.electronAPI.getSettings();
+          if (loadedSettings) {
+            const localTheme = localStorage.getItem('uft-theme') as 'dark' | 'light' | 'system' | null;
+            this.settings = {
+              ...loadedSettings,
+              theme: localTheme || loadedSettings.theme || 'dark',
+            };
+            this.applyTheme(this.settings.theme);
+            this.notify();
+          }
+          const max = await window.electronAPI.isMaximized();
+          this.isWindowMaximized = max;
+          this.notify();
+        } catch (e) {
+          console.warn('Could not initialize electron settings', e);
+        }
       }
     }
   }
@@ -163,7 +177,12 @@ class AppStateManager {
 
   public applyTheme(theme: 'dark' | 'light' | 'system') {
     const root = document.documentElement;
-    if (theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    try {
+      localStorage.setItem('uft-theme', theme);
+    } catch (e) {}
+
+    const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (isDark) {
       root.classList.add('dark');
       root.classList.remove('light');
     } else {

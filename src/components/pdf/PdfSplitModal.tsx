@@ -53,48 +53,48 @@ export const PdfSplitModal: React.FC = () => {
             onClick={() => setMode('each')}
             className={`p-4 rounded-2xl border text-left transition-all ${
               mode === 'each'
-                ? 'bg-amber-500/15 border-amber-400 text-white shadow-md shadow-amber-500/10'
-                : 'bg-slate-800/60 border-slate-700/80 text-slate-300 hover:bg-slate-800'
+                ? 'bg-amber-500/15 border-amber-500 text-slate-800 dark:text-white shadow-md shadow-amber-500/10'
+                : 'bg-slate-100 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800'
             }`}
           >
             <div className="text-sm font-bold mb-1">Separate Every Page</div>
-            <div className="text-xs text-slate-400">Creates a standalone PDF for each individual page</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400">Creates a standalone PDF for each individual page</div>
           </button>
 
           <button
             onClick={() => setMode('range')}
             className={`p-4 rounded-2xl border text-left transition-all ${
               mode === 'range'
-                ? 'bg-amber-500/15 border-amber-400 text-white shadow-md shadow-amber-500/10'
-                : 'bg-slate-800/60 border-slate-700/80 text-slate-300 hover:bg-slate-800'
+                ? 'bg-amber-500/15 border-amber-500 text-slate-800 dark:text-white shadow-md shadow-amber-500/10'
+                : 'bg-slate-100 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800'
             }`}
           >
             <div className="text-sm font-bold mb-1">Custom Ranges</div>
-            <div className="text-xs text-slate-400">Specify ranges like 1-3, 5, 7-10</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400">Specify ranges like 1-3, 5, 7-10</div>
           </button>
         </div>
 
         {mode === 'range' && (
-          <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
-            <label className="text-xs font-semibold text-slate-300 block">Page Ranges</label>
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 space-y-2">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">Page Ranges</label>
             <input
               type="text"
               value={rangeStr}
               onChange={(e) => setRangeStr(e.target.value)}
               placeholder="e.g. 1-2, 3-5, 8"
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:border-amber-500"
+              className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-sm focus:outline-none focus:border-amber-500 shadow-sm"
             />
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
               Each comma-separated range will be saved as an independent PDF document.
             </p>
           </div>
         )}
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
           <button
             onClick={() => store.setActiveModal(null)}
-            className="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs transition-colors"
+            className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs transition-colors"
           >
             Cancel
           </button>

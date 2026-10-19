@@ -46,7 +46,7 @@ export const App: React.FC = () => {
   }, [store]);
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-900 select-none">
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 select-none transition-colors duration-200">
       {/* Titlebar Header */}
       <Header />
 

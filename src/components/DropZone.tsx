@@ -115,8 +115,8 @@ export const DropZone: React.FC = () => {
       onDrop={handleDrop}
       className={`relative w-full h-[calc(100vh-3rem)] flex flex-col items-center justify-between p-8 transition-all duration-300 ${
         isDragOver 
-          ? 'bg-sky-950/40 border-2 border-dashed border-sky-400 scale-[0.99] rounded-2xl' 
-          : 'bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950'
+          ? 'bg-sky-100/50 dark:bg-sky-950/40 border-2 border-dashed border-sky-500 scale-[0.99] rounded-2xl' 
+          : 'bg-gradient-to-b from-slate-50 via-sky-50/20 to-slate-100 dark:from-slate-900 dark:via-slate-900 dark:to-slate-950'
       }`}
     >
       {/* Background radial glow */}
@@ -126,8 +126,8 @@ export const DropZone: React.FC = () => {
       </div>
 
       {/* Top Banner Tag */}
-      <div className="z-10 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-slate-700/60 shadow-lg text-xs font-medium text-slate-300 backdrop-blur-sm">
-        <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+      <div className="z-10 flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 shadow-sm dark:shadow-lg text-xs font-medium text-slate-700 dark:text-slate-300 backdrop-blur-sm">
+        <Sparkles className="w-3.5 h-3.5 text-sky-500" />
         <span>Instant Drag-and-Drop Radial File Processing</span>
       </div>
 
@@ -137,21 +137,21 @@ export const DropZone: React.FC = () => {
           onClick={handleBrowseFiles}
           className={`group cursor-pointer relative flex flex-col items-center justify-center p-10 rounded-3xl transition-all duration-300 border ${
             isDragOver 
-              ? 'border-sky-400 bg-sky-500/20 shadow-2xl shadow-sky-500/30 scale-105' 
-              : 'border-slate-700/60 bg-slate-800/40 hover:bg-slate-800/70 hover:border-sky-500/50 hover:shadow-2xl hover:shadow-sky-500/10'
+              ? 'border-sky-500 bg-sky-500/10 dark:bg-sky-500/20 shadow-2xl shadow-sky-500/20 scale-105' 
+              : 'border-slate-200 dark:border-slate-700/60 bg-white/80 dark:bg-slate-800/40 hover:bg-white dark:hover:bg-slate-800/70 hover:border-sky-400 dark:hover:border-sky-500/50 shadow-xl shadow-slate-200/50 dark:shadow-none hover:shadow-2xl hover:shadow-sky-500/10'
           }`}
         >
           {/* Animated pulsing orbit ring */}
           <div className="absolute inset-0 rounded-3xl border border-sky-500/20 animate-pulse pointer-events-none" />
 
-          <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-sky-500/20 to-indigo-500/20 border border-sky-400/30 flex items-center justify-center text-sky-400 mb-6 group-hover:scale-110 group-hover:bg-sky-500 group-hover:text-white transition-all duration-300 shadow-xl shadow-sky-500/10">
+          <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-sky-500/15 to-indigo-500/15 dark:from-sky-500/20 dark:to-indigo-500/20 border border-sky-400/40 flex items-center justify-center text-sky-500 dark:text-sky-400 mb-6 group-hover:scale-110 group-hover:bg-sky-500 group-hover:text-white transition-all duration-300 shadow-xl shadow-sky-500/10">
             <UploadCloud className="w-10 h-10" />
           </div>
 
-          <h2 className="text-2xl font-bold tracking-tight text-white mb-2">
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">
             Drag & drop files here
           </h2>
-          <p className="text-sm text-slate-400 max-w-md mb-6 leading-relaxed">
+          <p className="text-sm text-slate-600 dark:text-slate-400 max-w-md mb-6 leading-relaxed">
             Drop any image, PDF document, or text file to instantly reveal its contextual radial action menu.
           </p>
 
@@ -170,9 +170,9 @@ export const DropZone: React.FC = () => {
                 e.stopPropagation();
                 handleBrowseFiles();
               }}
-              className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white font-medium text-sm flex items-center gap-2 transition-all active:scale-95"
+              className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-700 dark:text-slate-300 dark:hover:text-white font-medium text-sm flex items-center gap-2 transition-all active:scale-95"
             >
-              <Layers className="w-4 h-4 text-indigo-400" />
+              <Layers className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
               <span>Batch Mode</span>
             </button>
           </div>
@@ -183,7 +183,7 @@ export const DropZone: React.FC = () => {
           {['PNG', 'JPG', 'WEBP', 'PDF', 'AVIF', 'TIFF', 'ICO', 'DOCX', 'TXT'].map((fmt) => (
             <span
               key={fmt}
-              className="px-2 py-0.5 rounded-md text-[11px] font-semibold tracking-wider bg-slate-800/60 text-slate-400 border border-slate-700/50"
+              className="px-2 py-0.5 rounded-md text-[11px] font-semibold tracking-wider bg-slate-200/80 dark:bg-slate-800/60 text-slate-700 dark:text-slate-400 border border-slate-300/80 dark:border-slate-700/50"
             >
               {fmt}
             </span>
@@ -193,10 +193,10 @@ export const DropZone: React.FC = () => {
 
       {/* Bottom Recent Files Bar */}
       {store.recentFiles.length > 0 && (
-        <div className="z-10 w-full max-w-3xl bg-slate-800/50 backdrop-blur-md rounded-2xl border border-slate-700/60 p-3.5 shadow-xl">
+        <div className="z-10 w-full max-w-3xl bg-white/80 dark:bg-slate-800/50 backdrop-blur-md rounded-2xl border border-slate-200/80 dark:border-slate-700/60 p-3.5 shadow-xl shadow-slate-200/40 dark:shadow-none">
           <div className="flex items-center justify-between mb-2.5 px-1.5">
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-              <Clock className="w-3.5 h-3.5 text-sky-400" />
+            <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+              <Clock className="w-3.5 h-3.5 text-sky-500" />
               <span>Recent Files</span>
             </div>
             <span className="text-[11px] text-slate-500">Click any file to resume editing</span>
@@ -207,22 +207,22 @@ export const DropZone: React.FC = () => {
               <button
                 key={file.id}
                 onClick={() => handleOpenRecent(file)}
-                className="group flex items-center gap-2.5 px-3 py-2 rounded-xl bg-slate-900/70 hover:bg-slate-700/60 border border-slate-800 hover:border-sky-500/40 text-left transition-all flex-shrink-0 max-w-[220px]"
+                className="group flex items-center gap-2.5 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900/70 hover:bg-slate-100 dark:hover:bg-slate-700/60 border border-slate-200/90 dark:border-slate-800 hover:border-sky-400 text-left transition-all flex-shrink-0 max-w-[220px]"
               >
-                <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300 group-hover:text-sky-400 flex-shrink-0 overflow-hidden">
+                <div className="w-8 h-8 rounded-lg bg-slate-200/70 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:text-sky-500 flex-shrink-0 overflow-hidden">
                   {file.thumbnailData ? (
                     <img src={file.thumbnailData} alt="" className="w-full h-full object-cover" />
                   ) : file.category === 'pdf' ? (
-                    <FileText className="w-4 h-4 text-rose-400" />
+                    <FileText className="w-4 h-4 text-rose-500" />
                   ) : (
-                    <FileImage className="w-4 h-4 text-sky-400" />
+                    <FileImage className="w-4 h-4 text-sky-500" />
                   )}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs font-medium text-slate-200 truncate group-hover:text-white">
+                  <p className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate group-hover:text-sky-600 dark:group-hover:text-white">
                     {file.name}
                   </p>
-                  <p className="text-[10px] text-slate-400">
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400">
                     {file.formattedSize}
                   </p>
                 </div>
