@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Modal } from '../common/Modal';
 import { useAppStore } from '../../store/useAppStore';
-import { Type, Check, Sparkles, ShieldAlert, Plus, Trash2 } from 'lucide-react';
+import { Check, Move, Eye, ShieldAlert, Sparkles, Sliders } from 'lucide-react';
 import { AnnotateOptions } from '../../types';
 
 export const AnnotateEditor: React.FC = () => {
@@ -11,18 +11,163 @@ export const AnnotateEditor: React.FC = () => {
 
   const [tab, setTab] = useState<'text' | 'watermark'>('text');
 
-  // Text overlays state
+  // Text Caption State
+  const [captionEnabled, setCaptionEnabled] = useState(true);
   const [captionText, setCaptionText] = useState('Sample Text');
+  const [captionPos, setCaptionPos] = useState({ x: 8, y: 80 }); // percentage 0-100
   const [fontSize, setFontSize] = useState(36);
   const [textColor, setTextColor] = useState('#ffffff');
   const [hasBadge, setHasBadge] = useState(true);
-  const [badgeColor, setBadgeColor] = useState('rgba(0,0,0,0.6)');
+  const [badgeColor, setBadgeColor] = useState('rgba(0, 0, 0, 0.65)');
 
-  // Watermark state
+  // Watermark State
   const [watermarkEnabled, setWatermarkEnabled] = useState(false);
   const [watermarkText, setWatermarkText] = useState('CONFIDENTIAL');
-  const [watermarkOpacity, setWatermarkOpacity] = useState(35);
-  const [watermarkPosition, setWatermarkPosition] = useState<'diagonal' | 'bottom-right' | 'center'>('diagonal');
+  const [watermarkFontSize, setWatermarkFontSize] = useState(64);
+  const [watermarkOpacity, setWatermarkOpacity] = useState(45);
+  const [watermarkColor, setWatermarkColor] = useState('#e11d48'); // Bold Red/Rose default for security stamps
+  const [watermarkPos, setWatermarkPos] = useState({ x: 50, y: 50 }); // percentage 0-100
+  const [watermarkRotation, setWatermarkRotation] = useState(-45); // degrees: -45 is standard diagonal
+
+  // Dragging interaction & preview scale state
+  const [isDraggingCaption, setIsDraggingCaption] = useState(false);
+  const [isDraggingWatermark, setIsDraggingWatermark] = useState(false);
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const [previewScale, setPreviewScale] = useState(0.5);
+  const dragStartRef = useRef<{ clientX: number; clientY: number; initialX: number; initialY: number } | null>(null);
+  const watermarkDragStartRef = useRef<{ clientX: number; clientY: number; initialX: number; initialY: number } | null>(null);
+
+  const updatePreviewScale = useCallback(() => {
+    if (imageRef.current) {
+      const renderedW = imageRef.current.clientWidth;
+      const naturalW = file?.dimensions?.width || imageRef.current.naturalWidth || 800;
+      if (renderedW > 0 && naturalW > 0) {
+        setPreviewScale(renderedW / naturalW);
+      }
+    }
+  }, [file]);
+
+  useEffect(() => {
+    updatePreviewScale();
+    window.addEventListener('resize', updatePreviewScale);
+    return () => window.removeEventListener('resize', updatePreviewScale);
+  }, [updatePreviewScale, isOpen]);
+
+  // Sync initial state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setCaptionPos({ x: 8, y: 80 });
+      setWatermarkPos({ x: 50, y: 50 });
+      setWatermarkRotation(-45);
+      const initialWmSize = file?.dimensions?.width 
+        ? Math.round(file.dimensions.width * 0.065) 
+        : 64;
+      setWatermarkFontSize(Math.max(24, Math.min(180, initialWmSize)));
+      setIsDraggingCaption(false);
+      setIsDraggingWatermark(false);
+    }
+  }, [isOpen, file]);
+
+  // Handle pointer down on caption badge to initiate dragging
+  const handleCaptionPointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0) return;
+    e.stopPropagation();
+    e.preventDefault();
+    setTab('text');
+
+    dragStartRef.current = {
+      clientX: e.clientX,
+      clientY: e.clientY,
+      initialX: captionPos.x,
+      initialY: captionPos.y,
+    };
+    setIsDraggingCaption(true);
+  };
+
+  // Handle pointer down on watermark to initiate dragging
+  const handleWatermarkPointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0) return;
+    e.stopPropagation();
+    e.preventDefault();
+    setTab('watermark');
+
+    watermarkDragStartRef.current = {
+      clientX: e.clientX,
+      clientY: e.clientY,
+      initialX: watermarkPos.x,
+      initialY: watermarkPos.y,
+    };
+    setIsDraggingWatermark(true);
+  };
+
+  // Global window listeners for drag move and release
+  useEffect(() => {
+    if (!isDraggingCaption && !isDraggingWatermark) return;
+
+    const handlePointerMove = (e: PointerEvent) => {
+      const container = previewContainerRef.current;
+      if (!container) return;
+
+      const rect = container.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+
+      // Caption dragging
+      if (isDraggingCaption && dragStartRef.current) {
+        const start = dragStartRef.current;
+        const deltaPixelX = e.clientX - start.clientX;
+        const deltaPixelY = e.clientY - start.clientY;
+
+        const deltaPctX = (deltaPixelX / rect.width) * 100;
+        const deltaPctY = (deltaPixelY / rect.height) * 100;
+
+        const newX = Math.max(0, Math.min(92, start.initialX + deltaPctX));
+        const newY = Math.max(0, Math.min(92, start.initialY + deltaPctY));
+
+        setCaptionPos({
+          x: Math.round(newX * 10) / 10,
+          y: Math.round(newY * 10) / 10,
+        });
+      }
+
+      // Watermark dragging
+      if (isDraggingWatermark && watermarkDragStartRef.current) {
+        const start = watermarkDragStartRef.current;
+        const deltaPixelX = e.clientX - start.clientX;
+        const deltaPixelY = e.clientY - start.clientY;
+
+        const deltaPctX = (deltaPixelX / rect.width) * 100;
+        const deltaPctY = (deltaPixelY / rect.height) * 100;
+
+        const newX = Math.max(0, Math.min(100, start.initialX + deltaPctX));
+        const newY = Math.max(0, Math.min(100, start.initialY + deltaPctY));
+
+        setWatermarkPos({
+          x: Math.round(newX * 10) / 10,
+          y: Math.round(newY * 10) / 10,
+        });
+      }
+    };
+
+    const handlePointerUp = () => {
+      dragStartRef.current = null;
+      watermarkDragStartRef.current = null;
+      setIsDraggingCaption(false);
+      setIsDraggingWatermark(false);
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+    };
+  }, [isDraggingCaption, isDraggingWatermark]);
+
+  // Alignment Presets for text
+  const applyAlignmentPreset = (x: number, y: number) => {
+    setCaptionPos({ x, y });
+  };
 
   const handleApply = async () => {
     if (!file || !window.electronAPI) return;
@@ -33,23 +178,25 @@ export const AnnotateEditor: React.FC = () => {
       const origH = file.dimensions?.height || 600;
 
       const options: AnnotateOptions = {
-        textOverlays: captionText.trim() ? [
+        textOverlays: (captionEnabled && captionText.trim()) ? [
           {
             text: captionText,
-            x: Math.round(origW * 0.1),
-            y: Math.round(origH * 0.9),
+            x: Math.round((captionPos.x / 100) * origW),
+            y: Math.round((captionPos.y / 100) * origH),
             fontSize,
             color: textColor,
             backgroundColor: hasBadge ? badgeColor : undefined,
             fontWeight: 'bold',
           }
         ] : [],
-        watermark: watermarkEnabled && watermarkText.trim() ? {
+        watermark: (watermarkEnabled && watermarkText.trim()) ? {
           text: watermarkText,
           opacity: watermarkOpacity / 100,
-          fontSize: Math.round(origW * 0.08),
-          color: '#ffffff',
-          position: watermarkPosition,
+          fontSize: watermarkFontSize,
+          color: watermarkColor,
+          x: watermarkPos.x,
+          y: watermarkPos.y,
+          rotation: watermarkRotation,
         } : undefined,
       };
 
@@ -75,54 +222,101 @@ export const AnnotateEditor: React.FC = () => {
 
   if (!file) return null;
 
+  // Curated color palettes
+  const textColors = [
+    { label: 'White', hex: '#ffffff' },
+    { label: 'Black', hex: '#000000' },
+    { label: 'Rose', hex: '#f43f5e' },
+    { label: 'Sky', hex: '#38bdf8' },
+    { label: 'Amber', hex: '#fbbf24' },
+    { label: 'Emerald', hex: '#4ade80' },
+  ];
+
+  const watermarkColors = [
+    { label: 'Security Red', hex: '#e11d48' },
+    { label: 'Solid Black', hex: '#000000' },
+    { label: 'Pure White', hex: '#ffffff' },
+    { label: 'Slate Gray', hex: '#475569' },
+    { label: 'Sky Blue', hex: '#0284c7' },
+    { label: 'Amber Gold', hex: '#d97706' },
+    { label: 'Emerald Green', hex: '#16a34a' },
+  ];
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={() => store.setActiveModal(null)}
       title="Annotate & Watermark"
-      subtitle="Stamp custom text overlays, brand badges, and diagonal security watermarks."
-      maxWidth="max-w-4xl"
+      subtitle="Stamp custom draggable text overlays, badges, and colored security watermarks."
+      maxWidth="max-w-5xl"
     >
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Live Canvas Preview */}
-        <div className="flex-1 relative min-h-[380px] max-h-[480px] bg-slate-100/90 dark:bg-slate-950/80 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 flex items-center justify-center overflow-hidden">
+        <div className="flex-1 relative min-h-[420px] max-h-[520px] bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 flex items-center justify-center overflow-hidden select-none">
           {file.thumbnailData && (
-            <div className="relative max-h-full max-w-full flex items-center justify-center">
+            <div 
+              ref={previewContainerRef}
+              className="relative inline-block max-h-full max-w-full select-none rounded-lg overflow-hidden shadow-2xl"
+              style={{ touchAction: 'none' }}
+            >
+              {/* Image Preview */}
               <img
+                ref={imageRef}
+                onLoad={updatePreviewScale}
                 src={file.thumbnailData}
                 alt=""
-                className="max-h-[380px] max-w-full object-contain rounded-lg shadow-2xl"
+                className="max-h-[420px] max-w-full object-contain block pointer-events-none"
+                draggable={false}
               />
 
-              {/* Live Simulated Caption Overlay */}
-              {captionText && (
+              {/* Draggable Caption Text Overlay */}
+              {captionEnabled && captionText && (
                 <div 
+                  onPointerDown={handleCaptionPointerDown}
                   style={{
+                    left: `${captionPos.x}%`,
+                    top: `${captionPos.y}%`,
                     color: textColor,
-                    fontSize: `${Math.max(12, Math.round(fontSize * 0.5))}px`,
+                    fontSize: `${Math.max(12, Math.round(fontSize * previewScale))}px`,
                     backgroundColor: hasBadge ? badgeColor : 'transparent',
                   }}
-                  className="absolute bottom-6 left-6 px-3 py-1 rounded-md font-bold shadow-lg pointer-events-none select-none max-w-[80%]"
+                  className={`absolute z-30 cursor-move select-none px-3 py-1.5 rounded-lg font-bold shadow-xl border transition-shadow flex items-center gap-2 group ${
+                    isDraggingCaption
+                      ? 'border-sky-400 ring-2 ring-sky-400/50 shadow-sky-500/30'
+                      : 'border-white/20 hover:border-sky-400'
+                  }`}
+                  title="Click and drag anywhere on the image to position"
                 >
-                  {captionText}
+                  <span className="whitespace-nowrap">{captionText}</span>
+                  <div className="p-0.5 rounded bg-black/40 text-sky-400 opacity-60 group-hover:opacity-100 transition-opacity">
+                    <Move className="w-3 h-3" />
+                  </div>
                 </div>
               )}
 
-              {/* Live Simulated Watermark */}
+              {/* Live Colored Watermark Overlay (Draggable & Rotatable) */}
               {watermarkEnabled && watermarkText && (
                 <div
+                  onPointerDown={handleWatermarkPointerDown}
                   style={{
+                    left: `${watermarkPos.x}%`,
+                    top: `${watermarkPos.y}%`,
+                    transform: `translate(-50%, -50%) rotate(${watermarkRotation}deg)`,
+                    color: watermarkColor,
                     opacity: watermarkOpacity / 100,
+                    fontSize: `${Math.max(12, Math.round(watermarkFontSize * previewScale))}px`,
                   }}
-                  className={`absolute pointer-events-none select-none text-white font-extrabold uppercase tracking-widest ${
-                    watermarkPosition === 'diagonal'
-                      ? 'text-3xl -rotate-45 text-center'
-                      : watermarkPosition === 'bottom-right'
-                      ? 'text-lg bottom-4 right-4'
-                      : 'text-3xl text-center'
+                  className={`absolute z-20 cursor-move select-none font-extrabold uppercase tracking-widest whitespace-nowrap px-3 py-1.5 rounded-xl transition-all border flex items-center gap-2 group ${
+                    isDraggingWatermark
+                      ? 'border-sky-400 ring-2 ring-sky-400/50 bg-black/30 shadow-2xl scale-105'
+                      : 'border-white/10 hover:border-sky-400/80 hover:bg-black/20'
                   }`}
+                  title="Click and drag to position anywhere on the image. Rotate in the sidebar."
                 >
-                  {watermarkText}
+                  <span>{watermarkText}</span>
+                  <div className="p-0.5 rounded bg-black/40 text-sky-400 opacity-60 group-hover:opacity-100 transition-opacity">
+                    <Move className="w-3 h-3" />
+                  </div>
                 </div>
               )}
             </div>
@@ -130,7 +324,7 @@ export const AnnotateEditor: React.FC = () => {
         </div>
 
         {/* Sidebar Controls */}
-        <div className="w-full lg:w-80 space-y-5">
+        <div className="w-full lg:w-80 space-y-4">
           {/* Tabs */}
           <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800">
             <button
@@ -157,59 +351,171 @@ export const AnnotateEditor: React.FC = () => {
 
           {tab === 'text' ? (
             <div className="space-y-4">
-              <div>
-                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Caption Text</label>
-                <input
-                  type="text"
-                  value={captionText}
-                  onChange={(e) => setCaptionText(e.target.value)}
-                  placeholder="Enter text overlay..."
-                  className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-xs focus:outline-none focus:border-sky-500 shadow-sm"
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-                  <span>Font Size</span>
-                  <span className="font-mono text-slate-800 dark:text-slate-200">{fontSize} px</span>
-                </div>
-                <input
-                  type="range"
-                  min="16"
-                  max="120"
-                  value={fontSize}
-                  onChange={(e) => setFontSize(Number(e.target.value))}
-                  className="w-full accent-sky-500 cursor-pointer"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">Text Color</label>
-                <div className="flex items-center gap-2">
-                  {['#ffffff', '#000000', '#f43f5e', '#38bdf8', '#fbbf24', '#4ade80'].map((c) => (
-                    <button
-                      key={c}
-                      onClick={() => setTextColor(c)}
-                      style={{ backgroundColor: c }}
-                      className={`w-6 h-6 rounded-lg border transition-transform ${
-                        textColor === c ? 'scale-110 border-sky-500 shadow-sm' : 'border-slate-300 dark:border-slate-700 hover:scale-105'
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div className="pt-2">
-                <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-600 dark:text-slate-300">
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-800 dark:text-white">
                   <input
                     type="checkbox"
-                    checked={hasBadge}
-                    onChange={(e) => setHasBadge(e.target.checked)}
-                    className="accent-sky-500 rounded"
+                    checked={captionEnabled}
+                    onChange={(e) => setCaptionEnabled(e.target.checked)}
+                    className="accent-sky-500 rounded w-4 h-4"
                   />
-                  <span>Include contrast background badge</span>
+                  <span>Enable Text Caption</span>
                 </label>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400">Drag text to move</span>
               </div>
+
+              {captionEnabled && (
+                <>
+                  <div>
+                    <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1">Caption Text</label>
+                    <input
+                      type="text"
+                      value={captionText}
+                      onChange={(e) => setCaptionText(e.target.value)}
+                      placeholder="Enter text overlay..."
+                      className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-xs focus:outline-none focus:border-sky-500 shadow-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+                      <span>Font Size</span>
+                      <span className="font-mono text-slate-800 dark:text-slate-200">{fontSize} px</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="16"
+                      max="120"
+                      value={fontSize}
+                      onChange={(e) => setFontSize(Number(e.target.value))}
+                      className="w-full accent-sky-500 cursor-pointer"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-semibold text-slate-500 dark:text-slate-400">Text Color</label>
+                      <span className="text-[10px] font-mono text-slate-400">{textColor}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {/* Custom Color first (no text label) */}
+                      <input
+                        type="color"
+                        value={textColor}
+                        onChange={(e) => setTextColor(e.target.value)}
+                        className="w-7 h-7 rounded-lg border border-slate-300 dark:border-slate-700 cursor-pointer p-0.5 bg-white dark:bg-slate-900 shadow-sm shrink-0 hover:scale-105 transition-transform"
+                        title="Pick custom text color"
+                      />
+
+                      {/* Divider */}
+                      <div className="h-5 w-px bg-slate-300 dark:bg-slate-700 mx-0.5 shrink-0" />
+
+                      {/* All other colors */}
+                      <div className="flex items-center gap-1.5 overflow-x-auto py-0.5">
+                        {textColors.map((c) => (
+                          <button
+                            key={c.hex}
+                            type="button"
+                            onClick={() => setTextColor(c.hex)}
+                            style={{ backgroundColor: c.hex }}
+                            title={c.label}
+                            className={`w-6 h-6 rounded-lg border transition-transform shrink-0 ${
+                              textColor.toLowerCase() === c.hex.toLowerCase()
+                                ? 'scale-115 border-sky-500 ring-2 ring-sky-400/40 shadow-sm'
+                                : 'border-slate-300 dark:border-slate-700 hover:scale-105'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Position Presets */}
+                  <div>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <label className="text-xs font-semibold text-slate-500 dark:text-slate-400">Position Presets</label>
+                      <span className="text-[10px] font-mono text-slate-400">{Math.round(captionPos.x)}%, {Math.round(captionPos.y)}%</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => applyAlignmentPreset(5, 5)}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Top-Left
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => applyAlignmentPreset(35, 5)}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Top-Center
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => applyAlignmentPreset(65, 5)}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Top-Right
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => applyAlignmentPreset(5, 45)}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Mid-Left
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => applyAlignmentPreset(35, 45)}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Center
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => applyAlignmentPreset(65, 45)}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Mid-Right
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => applyAlignmentPreset(5, 82)}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Bottom-Left
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => applyAlignmentPreset(35, 82)}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Bottom-Center
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => applyAlignmentPreset(65, 82)}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Bottom-Right
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-600 dark:text-slate-300">
+                      <input
+                        type="checkbox"
+                        checked={hasBadge}
+                        onChange={(e) => setHasBadge(e.target.checked)}
+                        className="accent-sky-500 rounded"
+                      />
+                      <span>Include contrast background badge</span>
+                    </label>
+                  </div>
+                </>
+              )}
             </div>
           ) : (
             <div className="space-y-4">
@@ -231,8 +537,64 @@ export const AnnotateEditor: React.FC = () => {
                       type="text"
                       value={watermarkText}
                       onChange={(e) => setWatermarkText(e.target.value)}
+                      placeholder="e.g. CONFIDENTIAL, DRAFT, SAMPLE"
                       className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-xs font-bold uppercase focus:outline-none focus:border-sky-500 shadow-sm"
                     />
+                  </div>
+
+                  {/* Watermark Text Size */}
+                  <div>
+                    <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+                      <span>Text Size</span>
+                      <span className="font-mono text-slate-800 dark:text-slate-200">{watermarkFontSize} px</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="16"
+                      max="240"
+                      value={watermarkFontSize}
+                      onChange={(e) => setWatermarkFontSize(Number(e.target.value))}
+                      className="w-full accent-sky-500 cursor-pointer"
+                    />
+                  </div>
+
+                  {/* Watermark Color Picker */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-semibold text-slate-500 dark:text-slate-400">Watermark Color</label>
+                      <span className="text-[10px] font-mono text-slate-400">{watermarkColor}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {/* Custom Color first (no text label) */}
+                      <input
+                        type="color"
+                        value={watermarkColor}
+                        onChange={(e) => setWatermarkColor(e.target.value)}
+                        className="w-7 h-7 rounded-lg border border-slate-300 dark:border-slate-700 cursor-pointer p-0.5 bg-white dark:bg-slate-900 shadow-sm shrink-0 hover:scale-105 transition-transform"
+                        title="Pick custom watermark color"
+                      />
+
+                      {/* Divider */}
+                      <div className="h-5 w-px bg-slate-300 dark:bg-slate-700 mx-0.5 shrink-0" />
+
+                      {/* All other colors */}
+                      <div className="flex items-center gap-1.5 overflow-x-auto py-0.5">
+                        {watermarkColors.map((c) => (
+                          <button
+                            key={c.hex}
+                            type="button"
+                            onClick={() => setWatermarkColor(c.hex)}
+                            style={{ backgroundColor: c.hex }}
+                            title={c.label}
+                            className={`w-6 h-6 rounded-lg border transition-transform shrink-0 ${
+                              watermarkColor.toLowerCase() === c.hex.toLowerCase()
+                                ? 'scale-115 border-sky-400 ring-2 ring-sky-400/50 shadow-md' 
+                                : 'border-slate-300 dark:border-slate-700 hover:scale-105'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
                   <div>
@@ -242,7 +604,7 @@ export const AnnotateEditor: React.FC = () => {
                     </div>
                     <input
                       type="range"
-                      min="10"
+                      min="5"
                       max="100"
                       value={watermarkOpacity}
                       onChange={(e) => setWatermarkOpacity(Number(e.target.value))}
@@ -250,23 +612,123 @@ export const AnnotateEditor: React.FC = () => {
                     />
                   </div>
 
+                  {/* Rotation Angle */}
                   <div>
-                    <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 block mb-1.5">Placement</label>
-                    <div className="grid grid-cols-3 gap-1.5">
-                      {(['diagonal', 'center', 'bottom-right'] as const).map((pos) => (
-                        <button
-                          key={pos}
-                          onClick={() => setWatermarkPosition(pos)}
-                          className={`py-1.5 px-2 rounded-lg text-[10px] font-bold uppercase border transition-all ${
-                            watermarkPosition === pos
-                              ? 'bg-sky-500/20 border-sky-400 text-sky-600 dark:text-sky-300 font-extrabold shadow-sm'
-                              : 'bg-slate-100 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
-                          }`}
-                        >
-                          {pos.replace('-', ' ')}
-                        </button>
-                      ))}
+                    <div className="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 mb-1">
+                      <span className="font-semibold">Rotation Angle</span>
+                      <span className="font-mono text-slate-800 dark:text-slate-200">
+                        {watermarkRotation}° {watermarkRotation === -45 ? '(Diagonal)' : watermarkRotation === 0 ? '(Horizontal)' : watermarkRotation === 90 ? '(Vertical)' : ''}
+                      </span>
                     </div>
+                    <input
+                      type="range"
+                      min="-180"
+                      max="180"
+                      value={watermarkRotation}
+                      onChange={(e) => setWatermarkRotation(Number(e.target.value))}
+                      className="w-full accent-sky-500 cursor-pointer mb-2"
+                    />
+                    <div className="grid grid-cols-4 gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setWatermarkRotation(-45)}
+                        className={`py-1 px-1 rounded-lg text-[10px] font-bold border transition-all ${
+                          watermarkRotation === -45
+                            ? 'bg-sky-500/20 border-sky-400 text-sky-600 dark:text-sky-300 font-extrabold shadow-sm'
+                            : 'bg-slate-100 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                        }`}
+                      >
+                        -45° Diag
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setWatermarkRotation(0)}
+                        className={`py-1 px-1 rounded-lg text-[10px] font-bold border transition-all ${
+                          watermarkRotation === 0
+                            ? 'bg-sky-500/20 border-sky-400 text-sky-600 dark:text-sky-300 font-extrabold shadow-sm'
+                            : 'bg-slate-100 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                        }`}
+                      >
+                        0° Horiz
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setWatermarkRotation(45)}
+                        className={`py-1 px-1 rounded-lg text-[10px] font-bold border transition-all ${
+                          watermarkRotation === 45
+                            ? 'bg-sky-500/20 border-sky-400 text-sky-600 dark:text-sky-300 font-extrabold shadow-sm'
+                            : 'bg-slate-100 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                        }`}
+                      >
+                        +45° Diag
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setWatermarkRotation(90)}
+                        className={`py-1 px-1 rounded-lg text-[10px] font-bold border transition-all ${
+                          watermarkRotation === 90
+                            ? 'bg-sky-500/20 border-sky-400 text-sky-600 dark:text-sky-300 font-extrabold shadow-sm'
+                            : 'bg-slate-100 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                        }`}
+                      >
+                        90° Vert
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Position Placement */}
+                  <div>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <label className="text-xs font-semibold text-slate-500 dark:text-slate-400">Position Placement</label>
+                      <span className="text-[10px] font-mono text-slate-400">{Math.round(watermarkPos.x)}%, {Math.round(watermarkPos.y)}%</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-1.5 mb-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setWatermarkPos({ x: 25, y: 25 })}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Top-Left
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setWatermarkPos({ x: 50, y: 25 })}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Top-Center
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setWatermarkPos({ x: 75, y: 25 })}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Top-Right
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setWatermarkPos({ x: 25, y: 75 })}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Bottom-Left
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setWatermarkPos({ x: 50, y: 50 })}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Center
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setWatermarkPos({ x: 75, y: 75 })}
+                        className="py-1 px-2 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                      >
+                        Bottom-Right
+                      </button>
+                    </div>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 italic block">
+                      Tip: You can drag the watermark directly on the image to any location!
+                    </span>
                   </div>
                 </>
               )}
@@ -274,7 +736,7 @@ export const AnnotateEditor: React.FC = () => {
           )}
 
           {/* Footer Actions */}
-          <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
+          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
             <button
               onClick={handleApply}
               disabled={store.isProcessing}
@@ -295,3 +757,5 @@ export const AnnotateEditor: React.FC = () => {
     </Modal>
   );
 };
+
+export default AnnotateEditor;

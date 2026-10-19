@@ -1,3 +1,4 @@
+import './setupEnv';
 import { app, BrowserWindow, ipcMain, shell, Tray, Menu, screen, nativeImage } from 'electron';
 import path from 'path';
 import fs from 'fs';
@@ -167,7 +168,7 @@ async function createFloatingWindow() {
   }
 }
 
-function expandFloatingWindow(targetW = 580, targetH = 580) {
+function expandFloatingWindow(targetW = 640, targetH = 640) {
   if (!floatingWindow || floatingWindow.isDestroyed()) return;
 
   const currentBounds = floatingWindow.getBounds();

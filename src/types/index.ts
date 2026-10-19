@@ -133,7 +133,10 @@ export interface AnnotateOptions {
     opacity: number;
     fontSize: number;
     color: string;
-    position: 'center' | 'bottom-right' | 'diagonal';
+    position?: 'center' | 'bottom-right' | 'diagonal' | 'custom';
+    x?: number;
+    y?: number;
+    rotation?: number;
   };
 }
 

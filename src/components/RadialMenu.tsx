@@ -152,7 +152,8 @@ export const RadialMenu: React.FC = () => {
   ];
 
   const actions = isImage ? imageActions : isPdf ? pdfActions : imageActions;
-  const radius = isImage ? 230 : 210;
+  const radiusX = isImage ? 320 : 290;
+  const radiusY = isImage ? 265 : 245;
 
   const renderIcon = (name: string, className = 'w-5 h-5') => {
     switch (name) {
@@ -217,21 +218,23 @@ export const RadialMenu: React.FC = () => {
       </div>
 
       {/* Orbit ring SVG decoration */}
-      <svg className="absolute w-[600px] h-[600px] pointer-events-none">
-        <circle
-          cx="300"
-          cy="300"
-          r={radius}
+      <svg className="absolute w-[800px] h-[700px] pointer-events-none">
+        <ellipse
+          cx="400"
+          cy="350"
+          rx={radiusX}
+          ry={radiusY}
           fill="none"
           stroke="currentColor"
           className="text-slate-300 dark:text-slate-700/60"
           strokeWidth="1.5"
           strokeDasharray="4 6"
         />
-        <circle
-          cx="300"
-          cy="300"
-          r={radius - 40}
+        <ellipse
+          cx="400"
+          cy="350"
+          rx={radiusX - 45}
+          ry={radiusY - 45}
           fill="none"
           stroke="currentColor"
           className="text-slate-200 dark:text-slate-800"
@@ -240,10 +243,10 @@ export const RadialMenu: React.FC = () => {
       </svg>
 
       {/* Central File Preview Hub */}
-      <div className="z-20 relative flex flex-col items-center justify-center">
-        <div className="w-64 p-5 rounded-3xl bg-white/95 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700/80 shadow-2xl shadow-slate-300/60 dark:shadow-2xl backdrop-blur-xl flex flex-col items-center text-center transition-all duration-300 hover:border-sky-400 dark:hover:border-sky-500/50 hover:shadow-sky-500/10">
+      <div className="z-20 relative flex flex-col items-center justify-center pointer-events-auto">
+        <div className="w-56 p-4 rounded-3xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-700/80 shadow-2xl shadow-slate-300/60 dark:shadow-2xl backdrop-blur-xl flex flex-col items-center text-center transition-all duration-300 hover:border-sky-400 dark:hover:border-sky-500/50 hover:shadow-sky-500/10">
           {/* File Thumbnail or Icon Preview */}
-          <div className="relative w-28 h-28 rounded-2xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/60 flex items-center justify-center overflow-hidden mb-3 shadow-inner">
+          <div className="relative w-20 h-20 rounded-2xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/60 flex items-center justify-center overflow-hidden mb-2.5 shadow-inner">
             {file.thumbnailData ? (
               <img
                 src={file.thumbnailData}
@@ -251,24 +254,24 @@ export const RadialMenu: React.FC = () => {
                 className="w-full h-full object-cover rounded-xl"
               />
             ) : file.category === 'pdf' ? (
-              <FileText className="w-12 h-12 text-rose-500" />
+              <FileText className="w-10 h-10 text-rose-500" />
             ) : (
-              <Info className="w-12 h-12 text-sky-500" />
+              <Info className="w-10 h-10 text-sky-500" />
             )}
 
             {/* Extension pill */}
-            <span className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 rounded text-[10px] font-bold uppercase bg-white/90 dark:bg-slate-900/90 text-sky-600 dark:text-sky-400 border border-slate-200 dark:border-slate-700 shadow-sm">
+            <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-white/90 dark:bg-slate-900/90 text-sky-600 dark:text-sky-400 border border-slate-200 dark:border-slate-700 shadow-sm">
               {file.extension.replace('.', '')}
             </span>
           </div>
 
           {/* Filename */}
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate max-w-[210px] mb-1" title={file.name}>
+          <h3 className="text-xs font-bold text-slate-900 dark:text-white truncate max-w-[190px] mb-1" title={file.name}>
             {file.name}
           </h3>
 
           {/* Metadata: Dimensions & Size */}
-          <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 mb-3">
+          <div className="flex items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400 mb-2.5">
             <span>{file.formattedSize}</span>
             {file.dimensions && (
               <>
@@ -285,16 +288,16 @@ export const RadialMenu: React.FC = () => {
           </div>
 
           {/* Bottom active hovered action readout or helper */}
-          <div className="w-full min-h-[46px] flex flex-col items-center justify-center py-1.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/40 text-xs">
+          <div className="w-full min-h-[42px] flex flex-col items-center justify-center py-1 px-2.5 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/40 text-xs">
             {hoveredAction ? (
               <div className="animate-fade-in text-center">
                 <p className="font-semibold text-sky-600 dark:text-sky-400 text-xs">{hoveredAction.label}</p>
-                <p className="text-[10px] text-slate-600 dark:text-slate-400 truncate max-w-[190px]">
+                <p className="text-[10px] text-slate-600 dark:text-slate-400 truncate max-w-[180px]">
                   {hoveredAction.description}
                 </p>
               </div>
             ) : (
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              <p className="text-[10px] text-slate-500 dark:text-slate-400">
                 Click any action to begin
               </p>
             )}
@@ -303,14 +306,14 @@ export const RadialMenu: React.FC = () => {
       </div>
 
       {/* Surrounding Radial Orbit Action Buttons */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none">
         {actions.map((action, index) => {
           const total = actions.length;
           // Distribute evenly around 360 degrees, starting at top (-90 deg)
           const angleDeg = (360 / total) * index - 90;
           const angleRad = (angleDeg * Math.PI) / 180;
-          const x = Math.round(radius * Math.cos(angleRad));
-          const y = Math.round(radius * Math.sin(angleRad));
+          const x = Math.round(radiusX * Math.cos(angleRad));
+          const y = Math.round(radiusY * Math.sin(angleRad));
 
           const isHovered = hoveredAction?.id === action.id;
 
@@ -318,23 +321,23 @@ export const RadialMenu: React.FC = () => {
             <div
               key={action.id}
               style={{
-                transform: `translate(${x}px, ${y}px)`,
+                transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`,
               }}
-              className="absolute pointer-events-auto transition-transform duration-200"
+              className="absolute top-1/2 left-1/2 pointer-events-auto transition-transform duration-200"
             >
               <button
                 onClick={() => handleActionClick(action.id)}
                 onMouseEnter={() => setHoveredAction(action)}
                 onMouseLeave={() => setHoveredAction(null)}
-                className={`group relative flex items-center gap-2.5 p-3 rounded-2xl border transition-all duration-200 shadow-xl active:scale-95 ${
+                className={`group relative flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl border transition-all duration-200 shadow-xl active:scale-95 whitespace-nowrap ${
                   isHovered
-                    ? 'scale-115 z-30 bg-white dark:bg-slate-800/95 border-sky-400 shadow-2xl shadow-sky-500/25'
+                    ? 'scale-110 z-30 bg-white dark:bg-slate-800/95 border-sky-400 shadow-2xl shadow-sky-500/25'
                     : 'bg-white/95 dark:bg-slate-900/90 border-slate-200 dark:border-slate-700/80 hover:border-sky-400 dark:hover:border-slate-500 text-slate-700 dark:text-slate-300 shadow-slate-200/60 dark:shadow-black/40'
                 }`}
               >
                 {/* Action Icon in Gradient Container */}
                 <div
-                  className={`w-10 h-10 rounded-xl bg-gradient-to-tr ${action.color} flex items-center justify-center text-white shadow-md transition-transform group-hover:scale-105`}
+                  className={`w-9 h-9 rounded-xl bg-gradient-to-tr ${action.color} flex items-center justify-center text-white shadow-md transition-transform group-hover:scale-105 flex-shrink-0`}
                 >
                   {renderIcon(action.iconName)}
                 </div>
@@ -344,7 +347,7 @@ export const RadialMenu: React.FC = () => {
                   <span className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-300 transition-colors">
                     {action.label}
                   </span>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 max-w-[90px] truncate">
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 max-w-[95px] truncate">
                     {action.label === 'Crop' ? 'Aspect Ratio' : action.label === 'Compress' ? 'Quality' : 'Quick tool'}
                   </span>
                 </div>

@@ -1,3 +1,4 @@
+import '../setupEnv';
 import { PDFDocument, degrees, PageSizes } from 'pdf-lib';
 import fs from 'fs/promises';
 import fsSync from 'fs';

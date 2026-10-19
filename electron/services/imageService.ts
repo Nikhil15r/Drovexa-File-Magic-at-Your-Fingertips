@@ -1,3 +1,4 @@
+import '../setupEnv';
 import sharp from 'sharp';
 import fs from 'fs/promises';
 import fsSync from 'fs';
@@ -510,11 +511,17 @@ export class ImageService {
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;');
           
-          if (item.backgroundColor) {
-            overlaysSvg += `<rect x="${item.x - 6}" y="${item.y - item.fontSize}" width="${item.text.length * (item.fontSize * 0.6) + 12}" height="${item.fontSize + 10}" rx="4" fill="${item.backgroundColor}" />`;
-          }
+          const padX = 12;
+          const padY = 6;
+          const estW = Math.round(item.text.length * (item.fontSize * 0.62) + padX * 2);
+          const estH = Math.round(item.fontSize + padY * 2);
 
-          overlaysSvg += `<text x="${item.x}" y="${item.y}" font-family="${item.fontFamily || 'sans-serif'}" font-size="${item.fontSize}px" font-weight="${item.fontWeight || 'normal'}" fill="${item.color}">${escText}</text>`;
+          if (item.backgroundColor) {
+            overlaysSvg += `<rect x="${item.x}" y="${item.y}" width="${estW}" height="${estH}" rx="6" fill="${item.backgroundColor}" />`;
+            overlaysSvg += `<text x="${item.x + padX}" y="${item.y + item.fontSize + 1}" font-family="${item.fontFamily || 'sans-serif'}" font-size="${item.fontSize}px" font-weight="${item.fontWeight || 'bold'}" fill="${item.color}">${escText}</text>`;
+          } else {
+            overlaysSvg += `<text x="${item.x}" y="${item.y + item.fontSize}" font-family="${item.fontFamily || 'sans-serif'}" font-size="${item.fontSize}px" font-weight="${item.fontWeight || 'bold'}" fill="${item.color}">${escText}</text>`;
+          }
         }
       }
 
@@ -522,23 +529,31 @@ export class ImageService {
       if (options.watermark && options.watermark.text) {
         const wm = options.watermark;
         const escWm = wm.text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        const opacity = wm.opacity || 0.3;
+        const opacity = wm.opacity ?? 0.4;
+        const wmColor = wm.color || '#e11d48';
 
-        if (wm.position === 'diagonal') {
-          overlaysSvg += `
-            <g transform="translate(${w / 2}, ${h / 2}) rotate(-35)">
-              <text text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-size="${wm.fontSize || 48}px" font-weight="bold" fill="${wm.color || '#ffffff'}" opacity="${opacity}">${escWm}</text>
-            </g>
-          `;
+        let posX = Math.round(w / 2);
+        let posY = Math.round(h / 2);
+
+        if (typeof wm.x === 'number' && typeof wm.y === 'number') {
+          posX = Math.round((wm.x / 100) * w);
+          posY = Math.round((wm.y / 100) * h);
         } else if (wm.position === 'bottom-right') {
-          overlaysSvg += `
-            <text x="${w - 24}" y="${h - 24}" text-anchor="end" font-family="sans-serif" font-size="${wm.fontSize || 24}px" font-weight="600" fill="${wm.color || '#ffffff'}" opacity="${opacity}">${escWm}</text>
-          `;
-        } else {
-          overlaysSvg += `
-            <text x="${w / 2}" y="${h / 2}" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-size="${wm.fontSize || 36}px" font-weight="bold" fill="${wm.color || '#ffffff'}" opacity="${opacity}">${escWm}</text>
-          `;
+          posX = w - Math.round(w * 0.15);
+          posY = h - Math.round(h * 0.1);
         }
+
+        const rotation = typeof wm.rotation === 'number'
+          ? wm.rotation
+          : (wm.position === 'diagonal' ? -45 : 0);
+
+        const fontSize = wm.fontSize || Math.round(w * 0.07);
+
+        overlaysSvg += `
+          <g transform="translate(${posX}, ${posY}) rotate(${rotation})">
+            <text text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-size="${fontSize}px" font-weight="bold" fill="${wmColor}" opacity="${opacity}">${escWm}</text>
+          </g>
+        `;
       }
 
       overlaysSvg += `</svg>`;

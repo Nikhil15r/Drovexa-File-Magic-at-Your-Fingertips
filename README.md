@@ -1,7 +1,7 @@
-# Universal File Toolkit (UFT)
-> **Modern, High-Speed Windows Desktop Application for Instant File Operations & Radial Actions**
+# Drovexa — File Magic at Your Fingertips
+> **Universal File Toolkit: Modern, High-Speed Windows Desktop Application for Instant File Operations & Radial Actions**
 
-Universal File Toolkit is a native-feeling, modern Windows 10 & 11 desktop application designed for fast, frictionless file processing. Instead of navigating multiple complex applications, simply drag any image, document, or PDF into the interactive workspace or onto the window to instantly reveal a contextual **Radial Action Menu** tailored specifically to that file.
+Drovexa (Universal File Toolkit) is a native-feeling, modern Windows 10 & 11 desktop application designed for fast, frictionless file processing. Instead of navigating multiple complex applications, simply drag any image, document, or PDF into the interactive workspace or onto the window to instantly reveal a contextual **Radial Action Menu** tailored specifically to that file.
 
 ---
 
