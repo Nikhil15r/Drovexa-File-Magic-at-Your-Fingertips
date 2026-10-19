@@ -34,6 +34,8 @@ class AppStateManager {
     defaultWebpQuality: 85,
     menuLayout: 'radial',
     showAnimations: true,
+    floatingWidgetEnabled: true,
+    floatingWidgetAlwaysOnTop: true,
   };
 
   constructor() {

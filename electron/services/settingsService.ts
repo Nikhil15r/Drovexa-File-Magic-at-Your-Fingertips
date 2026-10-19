@@ -20,6 +20,8 @@ export class SettingsService {
     defaultWebpQuality: 85,
     menuLayout: 'radial',
     showAnimations: true,
+    floatingWidgetEnabled: true,
+    floatingWidgetAlwaysOnTop: true,
   };
 
   public static async getSettings(): Promise<AppSettings> {

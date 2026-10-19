@@ -77,4 +77,30 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveSettings: (settings: Partial<AppSettings>) => ipcRenderer.invoke('settings:save', settings),
   installContextMenu: () => ipcRenderer.invoke('registry:installMenu'),
   uninstallContextMenu: () => ipcRenderer.invoke('registry:uninstallMenu'),
+
+  // Floating Widget & Quick Actions
+  toggleFloatingWidget: (show?: boolean) => ipcRenderer.invoke('floating:toggle', show),
+  isFloatingWidgetVisible: () => ipcRenderer.invoke('floating:isVisible'),
+  expandFloatingWidget: (width?: number, height?: number) => ipcRenderer.invoke('floating:expand', width, height),
+  collapseFloatingWidget: () => ipcRenderer.invoke('floating:collapse'),
+  openInMainWindow: (filePath: string, actionId?: string) => ipcRenderer.invoke('floating:openInMain', filePath, actionId),
+  hideFloatingWidget: () => ipcRenderer.invoke('floating:hide'),
+  resetFloatingWidgetPosition: () => ipcRenderer.invoke('floating:resetPosition'),
+
+  // Event Listeners
+  onCliOpenFile: (callback: (filePath: string) => void) => {
+    const listener = (_: any, path: string) => callback(path);
+    ipcRenderer.on('cli:openFile', listener);
+    return () => ipcRenderer.removeListener('cli:openFile', listener);
+  },
+  onOpenWithAction: (callback: (data: { filePath: string; actionId?: string }) => void) => {
+    const listener = (_: any, data: { filePath: string; actionId?: string }) => callback(data);
+    ipcRenderer.on('window:loadFileAndAction', listener);
+    return () => ipcRenderer.removeListener('window:loadFileAndAction', listener);
+  },
+  onFloatingVisibilityChange: (callback: (visible: boolean) => void) => {
+    const listener = (_: any, visible: boolean) => callback(visible);
+    ipcRenderer.on('floating:visibilityChange', listener);
+    return () => ipcRenderer.removeListener('floating:visibilityChange', listener);
+  },
 });

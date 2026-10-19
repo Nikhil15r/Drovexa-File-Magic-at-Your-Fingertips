@@ -18,14 +18,30 @@ export const Header: React.FC = () => {
   const store = useAppStore();
   const [isMaximized, setIsMaximized] = useState(false);
 
+  const [floatingVisible, setFloatingVisible] = useState(store.settings.floatingWidgetEnabled ?? true);
+
   useEffect(() => {
     const checkMax = async () => {
       if (window.electronAPI) {
         const max = await window.electronAPI.isMaximized();
         setIsMaximized(max);
+        const vis = await window.electronAPI.isFloatingWidgetVisible();
+        setFloatingVisible(vis);
       }
     };
     checkMax();
+
+    let unsub: (() => void) | undefined;
+    if (window.electronAPI) {
+      unsub = window.electronAPI.onFloatingVisibilityChange((visible) => {
+        setFloatingVisible(visible);
+        store.updateSettings({ floatingWidgetEnabled: visible });
+      });
+    }
+
+    return () => {
+      if (unsub) unsub();
+    };
   }, []);
 
   const handleMinimize = () => {
@@ -52,6 +68,14 @@ export const Header: React.FC = () => {
   const toggleMenuLayout = () => {
     const nextLayout = store.settings.menuLayout === 'radial' ? 'grid' : 'radial';
     store.updateSettings({ menuLayout: nextLayout });
+  };
+
+  const toggleFloating = async () => {
+    if (window.electronAPI) {
+      const next = await window.electronAPI.toggleFloatingWidget();
+      setFloatingVisible(next);
+      store.updateSettings({ floatingWidgetEnabled: next });
+    }
   };
 
   return (
@@ -82,6 +106,20 @@ export const Header: React.FC = () => {
 
       {/* Right Action Tools & Window Controls */}
       <div className="titlebar-no-drag flex items-center gap-1.5">
+        {/* Floating Drop Target Pill */}
+        <button
+          onClick={toggleFloating}
+          className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors ${
+            floatingVisible
+              ? 'bg-sky-50 dark:bg-sky-500/20 text-sky-600 dark:text-sky-300 border-sky-300 dark:border-sky-500/40 hover:bg-sky-100 dark:hover:bg-sky-500/30'
+              : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-200'
+          }`}
+          title="Toggle Always-on-Top Floating Desktop Drop Target"
+        >
+          <span className={`w-2 h-2 rounded-full ${floatingVisible ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
+          <span>Desktop Target</span>
+        </button>
+
         {/* Batch Queue Pill */}
         {store.batchItems.length > 0 && (
           <button

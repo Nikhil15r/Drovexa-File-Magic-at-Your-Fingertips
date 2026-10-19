@@ -140,6 +140,49 @@ export const SettingsModal: React.FC = () => {
           </label>
         </div>
 
+        {/* Floating Desktop Drop Target Settings */}
+        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1">
+                Floating Desktop Drop Target
+              </span>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Always-accessible floating drop pill on your desktop for quick drag-and-drop operations directly from Windows File Explorer.
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              checked={store.settings.floatingWidgetEnabled}
+              onChange={async (e) => {
+                const checked = e.target.checked;
+                store.updateSettings({ floatingWidgetEnabled: checked });
+                if (window.electronAPI) {
+                  await window.electronAPI.toggleFloatingWidget(checked);
+                }
+              }}
+              className="accent-sky-500 rounded w-4 h-4 ml-4"
+            />
+          </div>
+
+          {store.settings.floatingWidgetEnabled && (
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+              <span className="text-xs text-slate-700 dark:text-slate-300">Target Desktop Coordinates</span>
+              <button
+                onClick={async () => {
+                  if (window.electronAPI) {
+                    await window.electronAPI.resetFloatingWidgetPosition();
+                    store.showToast('Reset floating drop target to bottom-right corner', 'success');
+                  }
+                }}
+                className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 transition-colors"
+              >
+                Reset to Bottom-Right
+              </button>
+            </div>
+          )}
+        </div>
+
         {/* Windows Explorer Context Menu Integration */}
         <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 space-y-3">
           <div>

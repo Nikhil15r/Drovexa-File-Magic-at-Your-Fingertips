@@ -63,3 +63,13 @@
 .radial-button-glow:hover {
   box-shadow: 0 0 25px var(--accent-glow), 0 0 50px rgba(14, 165, 233, 0.15);
 }
+
+/* Floating Desktop Target transparent window rules */
+html.floating-mode,
+html.floating-mode body,
+html.floating-mode #root {
+  background-color: transparent !important;
+  background-image: none !important;
+  overflow: hidden !important;
+}
+

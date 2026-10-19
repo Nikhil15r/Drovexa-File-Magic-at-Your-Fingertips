@@ -185,6 +185,9 @@ export interface AppSettings {
   defaultWebpQuality: number;
   menuLayout: 'radial' | 'grid';
   showAnimations: boolean;
+  floatingWidgetEnabled: boolean;
+  floatingWidgetAlwaysOnTop: boolean;
+  floatingWidgetPosition?: { x: number; y: number };
 }
 
 export interface BatchItem {

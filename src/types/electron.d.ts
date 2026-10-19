@@ -61,6 +61,20 @@ export interface ElectronAPI {
   saveSettings: (settings: Partial<AppSettings>) => Promise<boolean>;
   installContextMenu: () => Promise<{ success: boolean; message: string }>;
   uninstallContextMenu: () => Promise<{ success: boolean; message: string }>;
+
+  // Floating Widget & Quick Actions
+  toggleFloatingWidget: (show?: boolean) => Promise<boolean>;
+  isFloatingWidgetVisible: () => Promise<boolean>;
+  expandFloatingWidget: (width?: number, height?: number) => Promise<void>;
+  collapseFloatingWidget: () => Promise<void>;
+  openInMainWindow: (filePath: string, actionId?: string) => Promise<void>;
+  hideFloatingWidget: () => Promise<void>;
+  resetFloatingWidgetPosition: () => Promise<void>;
+
+  // Event Listeners
+  onCliOpenFile: (callback: (filePath: string) => void) => () => void;
+  onOpenWithAction: (callback: (data: { filePath: string; actionId?: string }) => void) => () => void;
+  onFloatingVisibilityChange: (callback: (visible: boolean) => void) => () => void;
 }
 
 declare global {
