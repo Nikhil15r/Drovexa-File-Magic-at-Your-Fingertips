@@ -1,0 +1,38 @@
+appId: com.universalfiletoolkit.app
+productName: Universal File Toolkit
+directories:
+  output: release
+  buildResources: build
+files:
+  - dist/**/*
+  - dist-electron/**/*
+  - node_modules/sharp/**/*
+  - node_modules/@img/**/*
+  - node_modules/pdf-lib/**/*
+  - node_modules/mammoth/**/*
+  - package.json
+asar: true
+asarUnpack:
+  - "**/node_modules/sharp/**"
+  - "**/node_modules/@img/**"
+npmRebuild: false
+nodeGypRebuild: false
+buildDependenciesFromSource: false
+win:
+  target:
+    - target: dir
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+    - target: nsis
+      arch:
+        - x64
+  icon: build/icon.ico
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Universal File Toolkit
