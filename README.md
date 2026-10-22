@@ -1,6 +1,9 @@
 # Drovexa — File Magic at Your Fingertips
 > **Universal File Toolkit: Modern, High-Speed Windows Desktop Application for Instant File Operations & Radial Actions**
 
+[![Download for Windows](https://img.shields.io/badge/Download-Windows_Installer_(.exe)-blue?style=for-the-badge&logo=windows)](https://github.com/Nikhil15r/Drovexa-File-Magic-at-Your-Fingertips/releases/download/v1.0.0/Universal-File-Toolkit-Setup-1.0.0.exe)
+[![Latest Release](https://img.shields.io/badge/Release-v1.0.0-emerald?style=for-the-badge)](https://github.com/Nikhil15r/Drovexa-File-Magic-at-Your-Fingertips/releases/tag/v1.0.0)
+
 Drovexa (Universal File Toolkit) is a native-feeling, modern Windows 10 & 11 desktop application designed for fast, frictionless file processing. Instead of navigating multiple complex applications, simply drag any image, document, or PDF into the interactive workspace or onto the window to instantly reveal a contextual **Radial Action Menu** tailored specifically to that file.
 
 ---
