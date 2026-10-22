@@ -2,6 +2,7 @@
   "name": "universal-file-toolkit",
   "version": "1.0.0",
   "description": "Universal File Toolkit - Modern Windows Desktop File Operations & Radial Action System",
+  "homepage": "https://drovexa-filemagic.vercel.app/",
   "main": "dist-electron/main.js",
   "author": "Universal File Toolkit Team",
   "license": "MIT",
